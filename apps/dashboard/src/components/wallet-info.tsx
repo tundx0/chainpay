@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useWallet } from "@repo/wallet-core";
 import { Card } from "@repo/ui/card";
 import { Button } from "@repo/ui/button";
+import { CopyButton } from "@repo/ui/copy-button";
 
 const chainInfo = [
   { id: 1, name: "Ethereum Mainnet", shortName: "Ethereum", color: "bg-indigo-500 text-indigo-400" },
@@ -15,18 +16,9 @@ const chainInfo = [
 export function WalletInfo() {
   const { address, chainId, connector, disconnect, switchChain } = useWallet();
   const [switchingId, setSwitchingId] = useState<number | null>(null);
-  const [copied, setCopied] = useState(false);
 
   const formatAddress = (addr: string) => {
     return `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`;
-  };
-
-  const copyToClipboard = () => {
-    if (address) {
-      navigator.clipboard.writeText(address);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
   };
 
   const handleSwitchChain = async (id: number) => {
@@ -71,21 +63,10 @@ export function WalletInfo() {
           <code className="text-zinc-200 font-mono text-sm tracking-wide sm:text-base">
             {address ? formatAddress(address) : "0x000...0000"}
           </code>
-          <Button
-            variant="ghost"
-            onClick={copyToClipboard}
+          <CopyButton
+            value={address || ""}
             className="p-2 border border-zinc-800 rounded-xl hover:scale-105 active:scale-95 text-zinc-400 hover:text-zinc-200 bg-zinc-900"
-          >
-            {copied ? (
-              <svg className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-              </svg>
-            ) : (
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376A8.965 8.965 0 0 0 12 12.75a8.965 8.965 0 0 0-3.75 4.5m9 0a8.966 8.966 0 0 1-3 2.997m-7.002-12a9 9 0 1 1 18 0v1.125a3 3 0 0 1-3 3H2.25" />
-              </svg>
-            )}
-          </Button>
+          />
         </div>
       </div>
 

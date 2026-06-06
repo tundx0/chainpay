@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { paymentClient } from "@repo/payment-core";
 import type { PaymentRequest } from "@repo/payment-core";
+import { Button } from "@repo/ui/button";
 
 export default function PaymentsPage() {
   const [payments, setPayments] = useState<PaymentRequest[]>([]);
@@ -26,24 +27,24 @@ export default function PaymentsPage() {
   useEffect(() => { void load(); }, []);
 
   return (
-    <div className="fade-up" style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-      <div className="page-header" style={{ marginBottom: 0 }}>
+    <div className="fade-up flex flex-col gap-6">
+      <div className="page-header mb-0">
         <div>
-          <h1 className="page-title" style={{ textTransform: "uppercase", letterSpacing: "-0.02em" }}>Ledger</h1>
+          <h1 className="page-title uppercase tracking-[-0.02em]">Ledger</h1>
           <p className="page-desc">Complete cryptographic payment audit logs.</p>
         </div>
-        <div style={{ display: "flex", gap: 12 }}>
-          <button
+        <div className="flex gap-3">
+          <Button
             id="refresh-payments"
-            className="btn btn-ghost"
-            style={{ fontFamily: "var(--font-mono, monospace)", fontSize: 11 }}
+            variant="ghost"
+            className="font-mono text-[11px] border border-border"
             onClick={() => void load()}
             disabled={loading}
           >
             {loading ? "SYS_SYNCING..." : "SYNC_LEDGER"}
-          </button>
-          <Link id="create-payment-link" href="/payments/new" className="btn btn-primary" style={{ fontFamily: "var(--font-mono, monospace)", fontSize: 11 }}>
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: 4 }}>
+          </Button>
+          <Link id="create-payment-link" href="/payments/new" className="btn btn-primary font-mono text-[11px]">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" className="mr-1">
               <path d="M6 1v10M1 6h10" strokeLinecap="round" />
             </svg>
             NEW_INVOICE
@@ -56,14 +57,14 @@ export default function PaymentsPage() {
       <div className="table-wrap">
         {loading && payments.length === 0 ? (
           <div className="table-empty">
-            <div className="skeleton" style={{ height: 14, width: 140, margin: "0 auto 8px" }} />
-            <div className="skeleton" style={{ height: 12, width: 90, margin: "0 auto" }} />
+            <div className="skeleton h-[14px] w-[140px] mx-auto mb-2" />
+            <div className="skeleton h-[12px] w-[90px] mx-auto" />
           </div>
         ) : payments.length === 0 ? (
           <div className="table-empty">
-            <p style={{ margin: 0, fontFamily: "var(--font-mono, monospace)", fontSize: 13 }}>NO_LEDGER_RECORDS_FOUND</p>
-            <p style={{ margin: "6px 0 0", fontSize: 12 }}>
-              <Link href="/payments/new" style={{ color: "var(--accent)", textDecoration: "none", fontFamily: "var(--font-mono, monospace)" }}>
+            <p className="m-0 font-mono text-[13px]">NO_LEDGER_RECORDS_FOUND</p>
+            <p className="mt-[6px] text-xs">
+              <Link href="/payments/new" className="text-accent no-underline font-mono">
                 GENERATE_INVOICE_LOGS &rarr;
               </Link>
             </p>
@@ -85,16 +86,16 @@ export default function PaymentsPage() {
               {payments.map((p) => (
                 <tr key={p.id}>
                   <td><span className="mono-id">{p.id}</span></td>
-                  <td style={{ color: "var(--text-primary)", fontWeight: 600, fontFamily: "var(--font-mono, monospace)" }}>
+                  <td className="text-text-primary font-semibold font-mono">
                     {Number(p.amount).toLocaleString()}
                   </td>
-                  <td style={{ fontFamily: "var(--font-mono, monospace)" }}>{p.currency}</td>
-                  <td style={{ textTransform: "uppercase", fontSize: 11, fontFamily: "var(--font-mono, monospace)", color: "var(--text-secondary)" }}>{p.network}</td>
-                  <td style={{ color: "var(--text-muted)", maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: "var(--font-mono, monospace)", fontSize: 12 }}>
-                    {p.description ?? <span style={{ color: "var(--border)" }}>NULL_DESC</span>}
+                  <td className="font-mono">{p.currency}</td>
+                  <td className="uppercase text-[11px] font-mono text-text-secondary">{p.network}</td>
+                  <td className="text-muted max-w-[180px] truncate font-mono text-xs">
+                    {p.description ?? <span className="text-border">NULL_DESC</span>}
                   </td>
                   <td><span className={`badge badge-${p.status}`}>{p.status}</span></td>
-                  <td style={{ color: "var(--text-muted)", fontFamily: "var(--font-mono, monospace)", fontSize: 12 }}>
+                  <td className="text-muted font-mono text-xs">
                     {new Date(p.createdAt).toLocaleDateString("en-GB", {
                       day: "numeric", month: "short", year: "numeric",
                     })}

@@ -7,8 +7,8 @@ export default function NewPaymentPage() {
   const router = useRouter();
 
   return (
-    <div className="fade-up" style={{ maxWidth: 480 }}>
-      <div className="page-header" style={{ marginBottom: 20 }}>
+    <div className="fade-up max-w-[480px]">
+      <div className="page-header mb-5">
         <div>
           <h1 className="page-title">New Payment</h1>
           <p className="page-desc">Generate a checkout link to share with your customer.</p>

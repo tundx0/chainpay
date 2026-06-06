@@ -32,6 +32,7 @@
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
   --color-text-muted: var(--text-muted);
+  --color-muted: var(--text-muted);
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
   --color-accent-dim: var(--accent-dim);
@@ -45,6 +46,9 @@
 
   --font-inter: var(--font-inter);
   --font-mono: var(--font-mono);
+
+  --font-size-xxs: 9px;
+  --font-size-2xs: 9px;
 }
 
 
@@ -666,6 +670,10 @@ body {
   line-height: 1;
   color: var(--text-primary);
   text-shadow: 0 0 15px rgba(204, 255, 0, 0.15);
+}
+
+.glow-warning {
+  text-shadow: 0 0 15px rgba(255, 255, 0, 0.15);
 }
 
 /* Glowing cyber borders */

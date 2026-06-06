@@ -16,26 +16,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   if (!mounted) {
     return (
-      <div
-        style={{
-          display: "flex",
-          minHeight: "100vh",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "var(--bg)",
-          color: "var(--text-secondary)",
-        }}
-      >
-        <div
-          style={{
-            width: 24,
-            height: 24,
-            border: "2px solid var(--accent)",
-            borderTopColor: "transparent",
-            borderRadius: "50%",
-            animation: "spin 0.6s linear infinite",
-          }}
-        />
+      <div className="flex min-h-screen items-center justify-center bg-bg text-text-secondary">
+        <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-[spin_0.6s_linear_infinite]" />
         <style dangerouslySetInnerHTML={{ __html: `
           @keyframes spin {
             to { transform: rotate(360deg); }
@@ -47,214 +29,80 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   if (!connected) {
     return (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          minHeight: "100vh",
-          background: "#000000",
-          color: "var(--text-primary)",
-          position: "relative",
-          overflow: "hidden",
-          fontFamily: "var(--font-inter), sans-serif",
-        }}
-      >
+      <div className="flex flex-col min-h-screen bg-black text-text-primary relative overflow-hidden font-inter">
         {/* Cyber grid backdrop */}
         <div className="cyber-grid-overlay" />
 
         {/* Ambient neon backdrop glows */}
-        <div
-          style={{
-            position: "absolute",
-            top: "-15%",
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: "80%",
-            height: "500px",
-            background: "radial-gradient(circle, rgba(204, 255, 0, 0.05) 0%, transparent 70%)",
-            pointerEvents: "none",
-            zIndex: 1,
-          }}
-        />
+        <div className="absolute top-[-15%] left-1/2 -translate-x-1/2 w-[80%] h-[500px] bg-[radial-gradient(circle,rgba(204,255,0,0.05)_0%,transparent_70%)] pointer-events-none z-[1]" />
 
         {/* Header navigation bar */}
-        <header
-          className="cyber-glass"
-          style={{
-            position: "relative",
-            zIndex: 10,
-            width: "100%",
-            borderBottom: "1px solid var(--border)",
-            padding: "16px 40px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 12, fontWeight: 800, fontSize: 18, letterSpacing: "-0.03em" }}>
-            <div
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: 6,
-                background: "var(--accent)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#000000",
-                fontWeight: 900,
-                fontSize: 13,
-                boxShadow: "0 0 10px rgba(204, 255, 0, 0.3)",
-              }}
-            >
+        <header className="cyber-glass relative z-10 w-full border-b border-border py-4 px-10 flex items-center justify-between">
+          <div className="flex items-center gap-3 font-extrabold text-lg tracking-[-0.03em]">
+            <div className="w-7 h-7 rounded-[6px] bg-accent flex items-center justify-center text-black font-[900] text-[13px] shadow-[0_0_10px_rgba(204, 255, 0, 0.3)]">
               CP
             </div>
             <span>
-              CHAIN<span style={{ color: "var(--accent)", fontWeight: 500 }}>PAY</span>
+              CHAIN<span className="text-accent font-medium">PAY</span>
             </span>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: 20, fontSize: 12 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, color: "var(--text-secondary)" }}>
+          <div className="flex items-center gap-5 text-xs">
+            <div className="flex items-center gap-1.5 text-text-secondary">
               <span className="cyber-pulse-dot" />
-              <span style={{ fontFamily: "var(--font-mono, monospace)", letterSpacing: "0.05em", color: "var(--accent)" }}>SYS_ONLINE</span>
+              <span className="font-mono tracking-[0.05em] text-accent">SYS_ONLINE</span>
             </div>
-            <div style={{ height: 12, width: 1, background: "var(--border)" }} />
-            <span style={{ color: "var(--text-muted)", fontFamily: "var(--font-mono, monospace)" }}>V1.0.0_BETA</span>
+            <div className="h-3 w-[1px] bg-border" />
+            <span className="text-muted font-mono">V1.0.0_BETA</span>
           </div>
         </header>
 
         {/* Main Split Layout container */}
-        <main
-          style={{
-            position: "relative",
-            zIndex: 10,
-            flex: 1,
-            display: "grid",
-            gridTemplateColumns: "1fr",
-            maxWidth: 1280,
-            margin: "0 auto",
-            width: "100%",
-            padding: "40px 40px 80px",
-            alignItems: "center",
-            gap: 64,
-          }}
-          className="lg:grid-cols-2"
-        >
+        <main className="lg:grid-cols-2 relative z-10 flex-1 grid grid-cols-1 max-w-[1280px] mx-auto w-full pt-10 px-10 pb-20 items-center gap-16">
           {/* Left Panel: Telemetry & Value Proposition */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              <div
-                style={{
-                  alignSelf: "flex-start",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "4px 10px",
-                  borderRadius: 4,
-                  background: "rgba(204, 255, 0, 0.05)",
-                  border: "1px solid rgba(204, 255, 0, 0.15)",
-                  fontSize: 10,
-                  fontFamily: "var(--font-mono, monospace)",
-                  fontWeight: 600,
-                  color: "var(--accent)",
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                }}
-              >
+          <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-4">
+              <div className="self-start inline-flex items-center gap-2 py-[4px] px-[10px] rounded-[4px] bg-accent-dim border border-accent-border text-[10px] font-mono font-semibold text-accent tracking-[0.08em] uppercase">
                 [ MERCHANT_PORTAL_GATEWAY ]
               </div>
-              <h1
-                style={{
-                  fontSize: "clamp(36px, 4.5vw, 54px)",
-                  fontWeight: 900,
-                  letterSpacing: "-0.04em",
-                  lineHeight: 1.05,
-                  margin: 0,
-                  textTransform: "uppercase",
-                }}
-              >
-                Settle payments <span style={{ color: "var(--accent)" }}>instantly</span>. Settle on-chain.
+              <h1 className="text-[clamp(36px,4.5vw,54px)] font-[900] tracking-[-0.04em] leading-[1.05] m-0 uppercase">
+                Settle payments <span className="text-accent">instantly</span>. Settle on-chain.
               </h1>
-              <p
-                style={{
-                  fontSize: 15,
-                  lineHeight: 1.6,
-                  color: "var(--text-secondary)",
-                  margin: 0,
-                  maxWidth: 520,
-                }}
-              >
+              <p className="text-[15px] leading-1.6 text-text-secondary m-0 max-w-[520px]">
                 A high-performance crypto payment rail designed for modern businesses. Issue checkouts, request deposits, and track settlement volume on Base and Ethereum.
               </p>
             </div>
 
             {/* Feature Ledger block */}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 12,
-                background: "rgba(10,10,12,0.4)",
-                border: "1px solid var(--border)",
-                borderRadius: 8,
-                padding: "20px 24px",
-                fontFamily: "var(--font-mono, monospace)",
-                fontSize: 12,
-              }}
-            >
-              <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid var(--border)", paddingBottom: 8, color: "var(--text-muted)" }}>
+            <div className="flex flex-col gap-3 bg-zinc-950/40 border border-border rounded-lg py-5 px-6 font-mono text-xs">
+              <div className="flex justify-between border-b border-border pb-2 text-muted">
                 <span>FEATURE_INDEX</span>
                 <span>STATE_STATUS</span>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", padding: "4px 0" }}>
-                <span style={{ color: "var(--text-primary)" }}>01 // NON-CUSTODIAL ESCROW</span>
-                <span style={{ color: "var(--accent)" }}>SECURE</span>
+              <div className="flex justify-between py-1">
+                <span className="text-text-primary">01 // NON-CUSTODIAL ESCROW</span>
+                <span className="text-accent">SECURE</span>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", padding: "4px 0" }}>
-                <span style={{ color: "var(--text-primary)" }}>02 // BASE L2 LOW-FEE RAIL</span>
-                <span style={{ color: "var(--accent)" }}>ENABLED</span>
+              <div className="flex justify-between py-1">
+                <span className="text-text-primary">02 // BASE L2 LOW-FEE RAIL</span>
+                <span className="text-accent">ENABLED</span>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", padding: "4px 0" }}>
-                <span style={{ color: "var(--text-primary)" }}>03 // FULL INVOICE LEDGER</span>
-                <span style={{ color: "var(--accent)" }}>ONLINE</span>
+              <div className="flex justify-between py-1">
+                <span className="text-text-primary">03 // FULL INVOICE LEDGER</span>
+                <span className="text-accent">ONLINE</span>
               </div>
             </div>
           </div>
 
           {/* Right Panel: Gated Wallet Widget */}
-          <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
-            <div
-              style={{
-                width: "100%",
-                maxWidth: 440,
-                padding: 4,
-                borderRadius: 24,
-                background: "linear-gradient(135deg, rgba(204, 255, 0, 0.1) 0%, transparent 100%)",
-                boxShadow: "0 20px 40px rgba(0,0,0,0.8)",
-              }}
-            >
+          <div className="flex justify-center w-full">
+            <div className="w-full max-w-[440px] p-1 rounded-[24px] bg-[linear-gradient(135deg,rgba(204,255,0,0.1)_0%,transparent_100%)] shadow-[0_20px_40px_rgba(0,0,0,0.8)]">
               <ConnectWallet />
             </div>
           </div>
         </main>
 
-        <footer
-          style={{
-            position: "relative",
-            zIndex: 10,
-            width: "100%",
-            maxWidth: 1280,
-            margin: "0 auto",
-            padding: "20px 40px",
-            borderTop: "1px solid var(--border)",
-            display: "flex",
-            justifyContent: "space-between",
-            fontSize: 10,
-            fontFamily: "var(--font-mono, monospace)",
-            color: "var(--text-muted)",
-          }}
-        >
+        <footer className="relative z-10 w-full max-w-[1280px] mx-auto py-5 px-10 border-t border-border flex justify-between text-[10px] font-mono text-muted">
           <span>CHAINPAY_SYSTEMS &copy; {new Date().getFullYear()}</span>
           <span>STABLE_VERSION_RELEASE_APPROVED</span>
         </footer>

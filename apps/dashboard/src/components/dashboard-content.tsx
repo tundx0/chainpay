@@ -25,11 +25,11 @@ export default function DashboardContent() {
     .reduce((s, p) => s + Number(p.amount), 0);
 
   return (
-    <div className="fade-up" style={{ display: "flex", flexDirection: "column", gap: 32 }}>
+    <div className="fade-up flex flex-col gap-8">
       {/* Page header */}
-      <div className="page-header" style={{ marginBottom: 0 }}>
+      <div className="page-header mb-0">
         <div>
-          <h1 className="page-title" style={{ textTransform: "uppercase", letterSpacing: "-0.02em" }}>Overview</h1>
+          <h1 className="page-title uppercase tracking-[-0.02em]">Overview</h1>
           <p className="page-desc">Telemetry metrics and settlement activity.</p>
         </div>
         <Link href="/payments/new" className="btn btn-primary">
@@ -44,48 +44,48 @@ export default function DashboardContent() {
       <div className="stats-grid">
         <div className="cyber-card">
           <div className="cyber-grid-overlay" />
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-            <span className="stat-label" style={{ fontFamily: "var(--font-mono, monospace)", fontSize: 10, letterSpacing: "0.05em", color: "var(--text-muted)" }}>[ TOTAL_REQUESTS ]</span>
-            <span style={{ fontSize: 9, color: "var(--text-muted)", fontFamily: "var(--font-mono, monospace)" }}>RECORD_LOGS</span>
+          <div className="flex justify-between items-center mb-3">
+            <span className="stat-label font-mono text-[10px] tracking-[0.05em] text-muted">[ TOTAL_REQUESTS ]</span>
+            <span className="font-mono text-xxs text-muted">RECORD_LOGS</span>
           </div>
           <div className="cyber-telemetry-num">{loading ? "—" : total}</div>
-          <div className="stat-sub" style={{ marginTop: 8, fontSize: 11, color: "var(--text-muted)", fontFamily: "var(--font-mono, monospace)" }}>ALL_TIME_COUNT</div>
+          <div className="stat-sub mt-2 text-[11px] text-muted font-mono">ALL_TIME_COUNT</div>
         </div>
         
         <div className="cyber-card">
           <div className="cyber-grid-overlay" />
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-            <span className="stat-label" style={{ fontFamily: "var(--font-mono, monospace)", fontSize: 10, letterSpacing: "0.05em", color: "var(--text-muted)" }}>[ PENDING_INVOICES ]</span>
-            <span style={{ fontSize: 9, color: "var(--warning)", fontFamily: "var(--font-mono, monospace)" }}>AWAITING_TX</span>
+          <div className="flex justify-between items-center mb-3">
+            <span className="stat-label font-mono text-[10px] tracking-[0.05em] text-muted">[ PENDING_INVOICES ]</span>
+            <span className="font-mono text-xxs text-warning">AWAITING_TX</span>
           </div>
-          <div className="cyber-telemetry-num" style={{ color: "var(--warning)", textShadow: "0 0 15px rgba(255, 255, 0, 0.15)" }}>
+          <div className="cyber-telemetry-num text-warning glow-warning">
             {loading ? "—" : pending}
           </div>
-          <div className="stat-sub" style={{ marginTop: 8, fontSize: 11, color: "var(--text-muted)", fontFamily: "var(--font-mono, monospace)" }}>UNSETTLED_FUNDS</div>
+          <div className="stat-sub mt-2 text-[11px] text-muted font-mono">UNSETTLED_FUNDS</div>
         </div>
 
-        <div className="cyber-card" style={{ borderColor: "rgba(204, 255, 0, 0.2)" }}>
+        <div className="cyber-card border-accent-border">
           <div className="cyber-grid-overlay" />
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-            <span className="stat-label" style={{ fontFamily: "var(--font-mono, monospace)", fontSize: 10, letterSpacing: "0.05em", color: "var(--text-muted)" }}>[ TOTAL_VOLUME ]</span>
-            <span style={{ fontSize: 9, color: "var(--accent)", fontFamily: "var(--font-mono, monospace)", display: "flex", alignItems: "center", gap: 4 }}>
+          <div className="flex justify-between items-center mb-3">
+            <span className="stat-label font-mono text-[10px] tracking-[0.05em] text-muted">[ TOTAL_VOLUME ]</span>
+            <span className="font-mono text-xxs text-accent flex items-center gap-1">
               <span className="cyber-pulse-dot" /> LIVE_LEDGER
             </span>
           </div>
-          <div className="cyber-telemetry-num" style={{ color: "var(--accent)" }}>
+          <div className="cyber-telemetry-num text-accent">
             {loading ? "—" : totalVolume > 0 ? `$${totalVolume.toLocaleString()}` : "$0"}
           </div>
-          <div className="stat-sub" style={{ marginTop: 8, fontSize: 11, color: "var(--text-muted)", fontFamily: "var(--font-mono, monospace)" }}>{completed} SETTLED_TX</div>
+          <div className="stat-sub mt-2 text-[11px] text-muted font-mono">{completed} SETTLED_TX</div>
         </div>
       </div>
 
       {/* Recent payments */}
       <div>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-          <span style={{ fontSize: 11, fontWeight: 750, color: "var(--text-secondary)", fontFamily: "var(--font-mono, monospace)", letterSpacing: "0.08em" }}>
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-[11px] font-[750] text-text-secondary font-mono tracking-[0.08em]">
             [ RECENT_TRANSACTIONS ]
           </span>
-          <Link href="/payments" className="btn btn-ghost btn-sm" style={{ fontFamily: "var(--font-mono, monospace)", fontSize: 11 }}>
+          <Link href="/payments" className="btn btn-ghost btn-sm font-mono text-[11px]">
             View all &rarr;
           </Link>
         </div>
@@ -93,14 +93,14 @@ export default function DashboardContent() {
         <div className="table-wrap">
           {loading ? (
             <div className="table-empty">
-              <div className="skeleton" style={{ height: 14, width: 120, margin: "0 auto 8px" }} />
-              <div className="skeleton" style={{ height: 12, width: 80, margin: "0 auto" }} />
+              <div className="skeleton h-[14px] w-[120px] mx-auto mb-2" />
+              <div className="skeleton h-[12px] w-[80px] mx-auto" />
             </div>
           ) : payments.length === 0 ? (
             <div className="table-empty">
-              <p style={{ margin: 0, fontFamily: "var(--font-mono, monospace)", fontSize: 13 }}>NO_ACTIVE_INVOICE_LOGS</p>
-              <p style={{ margin: "6px 0 0", fontSize: 12 }}>
-                <Link href="/payments/new" style={{ color: "var(--accent)", textDecoration: "none", fontFamily: "var(--font-mono, monospace)" }}>
+              <p className="m-0 font-mono text-[13px]">NO_ACTIVE_INVOICE_LOGS</p>
+              <p className="mt-[6px] text-xs">
+                <Link href="/payments/new" className="text-accent no-underline font-mono">
                   INITIALIZE_FIRST_PAYMENT &rarr;
                 </Link>
               </p>
@@ -120,11 +120,11 @@ export default function DashboardContent() {
                 {payments.slice(0, 5).map((p) => (
                   <tr key={p.id}>
                     <td><span className="mono-id">{p.id}</span></td>
-                    <td style={{ color: "var(--text-primary)", fontWeight: 600, fontFamily: "var(--font-mono, monospace)" }}>
+                    <td className="text-text-primary font-semibold font-mono">
                       {Number(p.amount).toLocaleString()}
                     </td>
-                    <td style={{ fontFamily: "var(--font-mono, monospace)" }}>{p.currency}</td>
-                    <td style={{ textTransform: "capitalize", fontFamily: "var(--font-mono, monospace)" }}>{p.network}</td>
+                    <td className="font-mono">{p.currency}</td>
+                    <td className="capitalize font-mono">{p.network}</td>
                     <td>
                       <span className={`badge badge-${p.status}`}>{p.status}</span>
                     </td>

@@ -11,6 +11,8 @@ import {
   buildCheckoutUrl,
   paymentClient,
 } from "@repo/payment-core";
+import { CopyButton } from "@repo/ui/copy-button";
+import { Button } from "@repo/ui/button";
 
 interface CreatePaymentFormProps {
   onSuccess?: (paymentId: string) => void;
@@ -19,15 +21,6 @@ interface CreatePaymentFormProps {
 export function CreatePaymentForm({ onSuccess }: CreatePaymentFormProps) {
   const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
   const [serverError, setServerError] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = () => {
-    if (checkoutUrl) {
-      void navigator.clipboard.writeText(checkoutUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  };
 
   const {
     register,
@@ -36,7 +29,12 @@ export function CreatePaymentForm({ onSuccess }: CreatePaymentFormProps) {
     formState: { errors, isSubmitting },
   } = useForm<CreatePaymentSchema>({
     resolver: zodResolver(createPaymentSchema),
-    defaultValues: { amount: 50, currency: "USDC", network: "base", description: "" },
+    defaultValues: {
+      amount: 50,
+      currency: "USDC",
+      network: "base",
+      description: "",
+    },
   });
 
   const onSubmit = async (data: CreatePaymentSchema) => {
@@ -47,128 +45,156 @@ export function CreatePaymentForm({ onSuccess }: CreatePaymentFormProps) {
       onSuccess?.(id);
       reset();
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : "Something went wrong");
+      setServerError(
+        err instanceof Error ? err.message : "Something went wrong",
+      );
     }
   };
 
   return (
-    <div className="cyber-card" style={{ maxWidth: 480, margin: "0 auto", width: "100%", padding: 32 }}>
+    <div className="cyber-card max-w-[480px] mx-auto w-full p-8">
       <div className="cyber-grid-overlay" />
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--border)", paddingBottom: 16, marginBottom: 24 }}>
-        <span style={{ fontSize: 11, fontWeight: 700, fontFamily: "var(--font-mono, monospace)", color: "var(--text-secondary)", letterSpacing: "0.08em" }}>
+      <div className="flex justify-between items-center border-b border-border pb-4 mb-6">
+        <span className="text-[11px] font-bold font-mono text-text-secondary tracking-[0.08em]">
           [ GENERATE_INVOICE_PAYLOAD ]
         </span>
-        <span style={{ fontSize: 9, color: "var(--text-muted)", fontFamily: "var(--font-mono, monospace)" }}>V1.0_CREATE</span>
+        <span className="font-mono text-xxs text-muted">V1.0_CREATE</span>
       </div>
 
-      <form id="create-payment-form" onSubmit={handleSubmit(onSubmit)} style={{ display: "flex", flexDirection: "column", gap: 16, position: "relative", zIndex: 10 }}>
+      <form
+        id="create-payment-form"
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col gap-4 relative z-10"
+      >
         {/* Amount */}
         <div className="form-group">
-          <label htmlFor="amount" className="form-label" style={{ fontFamily: "var(--font-mono, monospace)", fontSize: 10, letterSpacing: "0.05em", color: "var(--text-muted)", textTransform: "uppercase" }}>
+          <label
+            htmlFor="amount"
+            className="form-label font-mono text-[10px] tracking-[0.05em] text-muted uppercase"
+          >
             [ INVOICE_AMOUNT ]
           </label>
           <input
             id="amount"
             type="number"
             step="any"
-            className="form-input"
+            className="form-input font-mono text-sm"
             placeholder="50"
-            style={{ fontFamily: "var(--font-mono, monospace)", fontSize: 14 }}
             {...register("amount", { valueAsNumber: true })}
           />
-          {errors.amount && <span className="form-error" style={{ fontFamily: "var(--font-mono, monospace)" }}>{errors.amount.message}</span>}
+          {errors.amount && (
+            <span className="form-error font-mono">
+              {errors.amount.message}
+            </span>
+          )}
         </div>
 
         {/* Currency + Network side by side */}
         <div className="form-grid">
           <div className="form-group">
-            <label htmlFor="currency" className="form-label" style={{ fontFamily: "var(--font-mono, monospace)", fontSize: 10, letterSpacing: "0.05em", color: "var(--text-muted)", textTransform: "uppercase" }}>
+            <label
+              htmlFor="currency"
+              className="form-label font-mono text-[10px] tracking-wider text-muted uppercase"
+            >
               [ CURRENCY_ASSET ]
             </label>
-            <select id="currency" className="form-select" style={{ fontFamily: "var(--font-mono, monospace)", fontSize: 13 }} {...register("currency")}>
-              {CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
+            <select
+              id="currency"
+              className="form-select font-mono text-[13px]"
+              {...register("currency")}
+            >
+              {CURRENCIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
             </select>
-            {errors.currency && <span className="form-error" style={{ fontFamily: "var(--font-mono, monospace)" }}>{errors.currency.message}</span>}
+            {errors.currency && (
+              <span className="form-error font-mono">
+                {errors.currency.message}
+              </span>
+            )}
           </div>
 
           <div className="form-group">
-            <label htmlFor="network" className="form-label" style={{ fontFamily: "var(--font-mono, monospace)", fontSize: 10, letterSpacing: "0.05em", color: "var(--text-muted)", textTransform: "uppercase" }}>
+            <label
+              htmlFor="network"
+              className="form-label font-mono text-[10px] tracking-wider text-muted uppercase"
+            >
               [ L2_SETTLE_NETWORK ]
             </label>
-            <select id="network" className="form-select" style={{ fontFamily: "var(--font-mono, monospace)", fontSize: 13 }} {...register("network")}>
+            <select
+              id="network"
+              className="form-select font-mono text-[13px]"
+              {...register("network")}
+            >
               {NETWORKS.map((n) => (
-                <option key={n} value={n}>{n.toUpperCase()}</option>
+                <option key={n} value={n}>
+                  {n.toUpperCase()}
+                </option>
               ))}
             </select>
-            {errors.network && <span className="form-error" style={{ fontFamily: "var(--font-mono, monospace)" }}>{errors.network.message}</span>}
+            {errors.network && (
+              <span className="form-error font-mono">
+                {errors.network.message}
+              </span>
+            )}
           </div>
         </div>
 
         {/* Description */}
         <div className="form-group">
-          <label htmlFor="description" className="form-label" style={{ fontFamily: "var(--font-mono, monospace)", fontSize: 10, letterSpacing: "0.05em", color: "var(--text-muted)", textTransform: "uppercase" }}>
-            [ METADATA_DESCRIPTION ] <span className="form-label-opt">(optional)</span>
+          <label
+            htmlFor="description"
+            className="form-label font-mono text-[10px] tracking-wider text-muted uppercase"
+          >
+            [ METADATA_DESCRIPTION ]{" "}
+            <span className="form-label-opt">(optional)</span>
           </label>
           <input
             id="description"
             type="text"
-            className="form-input"
+            className="form-input font-mono text-[13px]"
             placeholder="e.g. Premium Subscription"
-            style={{ fontFamily: "var(--font-mono, monospace)", fontSize: 13 }}
             {...register("description")}
           />
-          {errors.description && <span className="form-error" style={{ fontFamily: "var(--font-mono, monospace)" }}>{errors.description.message}</span>}
+          {errors.description && (
+            <span className="form-error font-mono">
+              {errors.description.message}
+            </span>
+          )}
         </div>
 
-        {serverError && <div className="alert-error" style={{ fontFamily: "var(--font-mono, monospace)", fontSize: 12 }}>{serverError}</div>}
+        {serverError && (
+          <div className="alert-error font-mono text-xs">{serverError}</div>
+        )}
 
-        <div style={{ height: 4 }} />
+        <div className="h-1" />
 
-        <button
+        <Button
           id="create-payment-submit"
           type="submit"
-          className="btn btn-primary"
+          variant="primary"
+          className="justify-center font-mono tracking-[0.05em] text-xs py-[10px] px-4"
           disabled={isSubmitting}
-          style={{ justifyContent: "center", fontFamily: "var(--font-mono, monospace)", letterSpacing: "0.05em", fontSize: 12, padding: "10px 16px" }}
         >
           {isSubmitting ? "INITIALIZING..." : "INITIALIZE_INVOICE_LOG"}
-        </button>
+        </Button>
 
         {checkoutUrl && (
-          <div className="checkout-result" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, marginTop: 20 }}>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div className="checkout-result-label" style={{ fontFamily: "var(--font-mono, monospace)", fontSize: 9, letterSpacing: "0.08em" }}>[ INVOICE_CHECKOUT_URL ]</div>
-              <div className="checkout-result-url" style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap", fontSize: 12 }}>{checkoutUrl}</div>
+          <div className="checkout-result flex items-center justify-between gap-4 mt-5">
+            <div className="flex-1 min-w-0">
+              <div className="checkout-result-label font-mono text-xxs tracking-[0.08em]">
+                [ INVOICE_CHECKOUT_URL ]
+              </div>
+              <div className="checkout-result-url truncate text-xs">
+                {checkoutUrl}
+              </div>
             </div>
-            <button
-              type="button"
-              onClick={handleCopy}
-              className="btn btn-ghost"
-              style={{
-                padding: 8,
-                height: "auto",
-                flexShrink: 0,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                border: "1px solid rgba(204, 255, 0, 0.2)",
-                background: "rgba(204, 255, 0, 0.05)",
-                color: "var(--accent)",
-                cursor: "pointer",
-                borderRadius: 6,
-                transition: "all 0.2s ease",
-              }}
-            >
-              {copied ? (
-                <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                </svg>
-              ) : (
-                <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376A8.965 8.965 0 0 0 12 12.75a8.965 8.965 0 0 0-3.75 4.5m9 0a8.966 8.966 0 0 1-3 2.997m-7.002-12a9 9 0 1 1 18 0v1.125a3 3 0 0 1-3 3H2.25" />
-                </svg>
-              )}
-            </button>
+            <CopyButton
+              value={checkoutUrl}
+              className="p-2 h-auto shrink-0 flex items-center justify-center border border-accent-border bg-accent-dim text-accent cursor-pointer rounded-[6px] transition-all duration-200 ease-in-out"
+            />
           </div>
         )}
       </form>

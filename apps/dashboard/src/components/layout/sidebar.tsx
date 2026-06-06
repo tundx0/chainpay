@@ -70,7 +70,7 @@ export function Sidebar() {
 
       {/* Footer */}
       <div className="sidebar-footer">
-        <Link href="/payments/new" className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }}>
+        <Link href="/payments/new" className="btn btn-primary w-full justify-center">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M6 1v10M1 6h10" strokeLinecap="round" />
           </svg>

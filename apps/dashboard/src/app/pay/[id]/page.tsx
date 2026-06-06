@@ -3,6 +3,7 @@
 import { use, useEffect, useState } from "react";
 import { paymentClient } from "@repo/payment-core";
 import type { PaymentRequest } from "@repo/payment-core";
+import { Button } from "@repo/ui/button";
 
 const STATUS_META = {
   pending:   { label: "Awaiting Payment", color: "var(--warning)",  dot: "var(--warning)" },
@@ -32,21 +33,17 @@ export default function CheckoutPage({ params }: { params: Promise<{ id: string 
       <div className="checkout-card fade-up">
         {/* Header */}
         <div className="checkout-header">
-          <div style={{
-            width: 26, height: 26, borderRadius: 6,
-            background: "var(--accent)", display: "flex",
-            alignItems: "center", justifyContent: "center", flexShrink: 0,
-          }}>
+          <div className="w-[26px] h-[26px] rounded-[6px] bg-accent flex items-center justify-center shrink-0">
             <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
               <path d="M2 9.5L7 2l1.5 4.5H12L7 12l1.5-4.5H2Z" fill="#000000" />
             </svg>
           </div>
-          <span style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)", letterSpacing: "-0.2px" }}>
-            Chain<span style={{ color: "var(--text-muted)", fontWeight: 400 }}>Pay</span>
+          <span className="text-sm font-semibold text-text-primary tracking-[-0.2px]">
+            Chain<span className="text-muted font-normal">Pay</span>
           </span>
 
           {meta && (
-            <span className={`badge badge-${payment?.status}`} style={{ marginLeft: "auto" }}>
+            <span className={`badge badge-${payment?.status} ml-auto`}>
               {meta.label}
             </span>
           )}
@@ -56,8 +53,8 @@ export default function CheckoutPage({ params }: { params: Promise<{ id: string 
         <div className="checkout-body">
           {loading && (
             <>
-              <div className="skeleton" style={{ height: 38, width: 140, marginBottom: 8 }} />
-              <div className="skeleton" style={{ height: 16, width: 80 }} />
+              <div className="skeleton h-[38px] w-[140px] mb-2" />
+              <div className="skeleton h-4 w-20" />
             </>
           )}
 
@@ -75,7 +72,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ id: string 
               </div>
 
               {payment.description && (
-                <p style={{ marginTop: 12, fontSize: 13, color: "var(--text-muted)" }}>
+                <p className="mt-3 text-[13px] text-muted">
                   {payment.description}
                 </p>
               )}
@@ -87,7 +84,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ id: string 
                 </div>
                 <div className="checkout-meta-row">
                   <span className="checkout-meta-key">Network</span>
-                  <span className="checkout-meta-val" style={{ textTransform: "capitalize" }}>
+                  <span className="checkout-meta-val capitalize">
                     {payment.network}
                   </span>
                 </div>
@@ -102,13 +99,13 @@ export default function CheckoutPage({ params }: { params: Promise<{ id: string 
               </div>
 
               {payment.status === "pending" && (
-                <button
+                <Button
                   id="pay-now-button"
-                  className="btn btn-primary"
-                  style={{ width: "100%", justifyContent: "center", marginTop: 20, padding: "12px 16px", fontSize: 14 }}
+                  variant="primary"
+                  className="w-full justify-center mt-5 py-3 px-4 text-sm"
                 >
                   Pay Now
-                </button>
+                </Button>
               )}
             </>
           )}
