@@ -1,35 +1,29 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
 import { WalletProvider } from "@repo/wallet-core";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
   subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "ChainPay Dashboard",
-  description: "Manage your cryptocurrency payments and wallets",
+  title: { default: "ChainPay", template: "%s · ChainPay" },
+  description: "Crypto payment infrastructure for modern merchants",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col bg-zinc-950 text-zinc-50 font-sans">
+    <html lang="en" className={`${inter.variable} ${geistMono.variable}`}>
+      <body>
         <WalletProvider>{children}</WalletProvider>
       </body>
     </html>
