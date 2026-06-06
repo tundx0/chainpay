@@ -23,6 +23,30 @@
   --font-mono: ui-monospace, "Geist Mono", monospace;
 }
 
+@theme {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-dim: var(--accent-dim);
+  --color-accent-border: var(--accent-border);
+  --color-success: var(--success);
+  --color-success-dim: var(--success-dim);
+  --color-warning: var(--warning);
+  --color-warning-dim: var(--warning-dim);
+  --color-danger: var(--danger);
+  --color-danger-dim: var(--danger-dim);
+
+  --font-inter: var(--font-inter);
+  --font-mono: var(--font-mono);
+}
+
 
 *,
 *::before,
