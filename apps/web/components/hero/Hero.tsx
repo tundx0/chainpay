@@ -28,13 +28,13 @@ export default function Hero() {
 
         <div className="flex gap-4 mt-2">
           <a 
-            href="http://localhost:3000" 
+            href={process.env.NEXT_PUBLIC_DASHBOARD_URL ?? "http://localhost:3000"} 
             className="px-6 py-3 bg-accent text-black text-[13.5px] font-extrabold rounded-xl hover-glow-accent"
           >
             Get Started Free &rarr;
           </a>
           <a 
-            href="http://localhost:3001" 
+            href={process.env.NEXT_PUBLIC_DOCS_URL ?? "http://localhost:3001"} 
             className="px-6 py-3 border border-border bg-surface-raised/40 text-text-primary text-[13.5px] font-semibold rounded-xl hover:bg-surface hover-scale-subtle"
           >
             Read Docs

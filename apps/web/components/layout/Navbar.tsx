@@ -17,19 +17,19 @@ export default function Navbar() {
         
         <nav className="flex items-center gap-8">
           <a 
-            href="http://localhost:3000" 
+            href={process.env.NEXT_PUBLIC_DASHBOARD_URL ?? "http://localhost:3000"} 
             className="text-[13px] font-semibold text-text-secondary hover:text-text-primary transition-colors duration-200"
           >
             Dashboard
           </a>
           <a 
-            href="http://localhost:3001" 
+            href={process.env.NEXT_PUBLIC_DOCS_URL ?? "http://localhost:3001"} 
             className="text-[13px] font-semibold text-text-secondary hover:text-text-primary transition-colors duration-200"
           >
             Docs
           </a>
           <a 
-            href="http://localhost:3000" 
+            href={process.env.NEXT_PUBLIC_DASHBOARD_URL ?? "http://localhost:3000"} 
             className="px-4 py-2 text-[12px] font-bold text-black bg-accent rounded-lg hover-glow-accent"
           >
             Enter Console &rarr;
