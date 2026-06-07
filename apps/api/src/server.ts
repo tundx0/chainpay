@@ -1,5 +1,8 @@
 import express from "express";
 import cors from "cors";
+import { serve } from "inngest/express";
+import { inngest } from "@repo/payment-core";
+import { paymentWorkflow } from "./workflows/payment-workflow";
 import { createPayment } from "./routes/payment/create-payment";
 import { listPayments } from "./routes/payment/list-payments";
 import { getPayment } from "./routes/payment/get-payment";
@@ -16,6 +19,9 @@ app.use(
   }),
 );
 app.use(express.json());
+
+// ─── Inngest Router ────────────────────────────────────────────────────────────
+app.use("/api/inngest", serve({ client: inngest, functions: [paymentWorkflow] }));
 
 // ─── Health ───────────────────────────────────────────────────────────────────
 app.get("/health", (_, res) => {

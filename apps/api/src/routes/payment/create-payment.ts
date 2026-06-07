@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { PaymentService } from "@repo/payment-core/src/services/payment-service.ts";
+import { PaymentService, inngest } from "@repo/payment-core";
 import { createPaymentSchema } from "@repo/payment-core/src/types/payment.ts";
 import { requireMerchantAddress } from "../../middleware/merchant-auth.ts";
 import { db } from "../../db";
@@ -20,5 +20,12 @@ export async function createPayment(req: Request, res: Response) {
   }
 
   const payment = await service.createPayment(parsed.data, merchantAddress);
+
+  // Trigger durable workflow
+  await inngest.send({
+    name: "payment.created",
+    data: { paymentId: payment.id },
+  });
+
   return res.status(201).json({ id: payment.id });
 }

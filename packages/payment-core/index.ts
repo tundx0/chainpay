@@ -27,6 +27,10 @@ export type {
 // API client (used by dashboard)
 export { paymentClient } from "./src/api/payment-client";
 
+// Inngest Client
+export { inngest } from "./src/clients/inngest-client";
+export type { ChainPayEvents } from "./src/clients/inngest-client";
+
 // Utilities
 export { buildCheckoutUrl } from "./src/utils/url";
 export { generatePaymentUri } from "./src/utils/generate-payment-uri";

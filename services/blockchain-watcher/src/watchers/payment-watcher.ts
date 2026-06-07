@@ -3,6 +3,7 @@ import {
   getRequiredConfirmations,
   PaymentService,
   PaymentVerificationService,
+  inngest,
   type ChainClient,
   type ChainClientFactory,
 } from "@repo/payment-core";
@@ -72,20 +73,51 @@ export class PaymentWatcher {
         return;
       }
 
+      // Emit transaction received event to Inngest if still pending
+      if (payment.status === "pending") {
+        console.log(`[watcher] ${payment.id} transfer detected. Emitting payment.received...`);
+        await inngest.send({
+          name: "payment.received",
+          data: {
+            paymentId: payment.id,
+            txHash: update.txHash,
+            payerAddress: update.payerAddress,
+          },
+        });
+      }
+
+      // Sync confirmations count in database for telemetry.
+      // Keep status as 'confirming' until Inngest updates it to 'completed'
+      const targetConfirmations = getRequiredConfirmations(payment.network as Network);
+      const updatePayload = {
+        ...update,
+        status: (update.status === "completed" ? "confirming" : update.status) as any,
+      };
+
       const saved = await this.paymentService.applyWatcherUpdate(
         payment.id,
-        update,
+        updatePayload,
       );
 
       if (!saved) {
-        console.log(`[watcher] ${payment.id} update skipped`);
-        return;
+        console.log(`[watcher] ${payment.id} db sync skipped`);
+      } else {
+        console.log(
+          `[watcher] ${payment.id} updated in DB -> status: ${saved.status}, confirmations: ${saved.confirmations}/${targetConfirmations}`
+        );
       }
 
-      console.log(
-        `[watcher] ${payment.id} -> ${saved.status} ` +
-          `(confirmations: ${saved.confirmations}/${getRequiredConfirmations(saved.network as Network)}, tx: ${saved.txHash})`,
-      );
+      // Emit confirmations complete event to Inngest
+      if (update.confirmations >= targetConfirmations) {
+        console.log(`[watcher] ${payment.id} confirmations met (${update.confirmations}/${targetConfirmations}). Emitting payment.confirmed...`);
+        await inngest.send({
+          name: "payment.confirmed",
+          data: {
+            paymentId: payment.id,
+            blockNumber: update.blockNumber,
+          },
+        });
+      }
     } catch (error) {
       console.error(`[watcher] Failed to inspect ${payment.id}:`, error);
     }

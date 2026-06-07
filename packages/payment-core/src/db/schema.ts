@@ -54,8 +54,51 @@ export const merchantWallets = pgTable("merchant_wallets", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+export const merchantWebhooks = pgTable("merchant_webhooks", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => `wh_${createId()}`),
+  merchantAddress: text("merchant_address").notNull(),
+  url: text("url").notNull(),
+  secret: text("secret").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const webhookDeliveries = pgTable("webhook_deliveries", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => `whd_${createId()}`),
+  paymentId: text("payment_id").notNull(),
+  url: text("url").notNull(),
+  payload: text("payload").notNull(),
+  statusCode: integer("status_code"),
+  responseBody: text("response_body"),
+  status: text("status").notNull(),
+  attemptNumber: integer("attempt_number").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const paymentWorkflows = pgTable("payment_workflows", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => `wf_${createId()}`),
+  paymentId: text("payment_id").notNull(),
+  state: text("state").notNull(),
+  stepLog: text("step_log").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 export type PaymentRequestRecord = typeof paymentRequests.$inferSelect;
 export type NewPaymentRequest = typeof paymentRequests.$inferInsert;
 
 export type MerchantWalletRecord = typeof merchantWallets.$inferSelect;
 export type NewMerchantWallet = typeof merchantWallets.$inferInsert;
+
+export type MerchantWebhookRecord = typeof merchantWebhooks.$inferSelect;
+export type NewMerchantWebhook = typeof merchantWebhooks.$inferInsert;
+
+export type WebhookDeliveryRecord = typeof webhookDeliveries.$inferSelect;
+export type NewWebhookDelivery = typeof webhookDeliveries.$inferInsert;
+
+export type PaymentWorkflowRecord = typeof paymentWorkflows.$inferSelect;
+export type NewPaymentWorkflow = typeof paymentWorkflows.$inferInsert;

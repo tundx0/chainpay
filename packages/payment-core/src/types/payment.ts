@@ -65,6 +65,8 @@ import type { CheckoutData } from "./checkout";
 export interface GetPaymentResponse {
   payment: PaymentRequest;
   checkout?: CheckoutData;
+  workflows?: any[];
+  webhooks?: any[];
 }
 
 // ─── Zod Schemas ─────────────────────────────────────────────────────────────

@@ -5,7 +5,9 @@
     "rootDir": "src",
     "allowImportingTsExtensions": true,
     "noEmit": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "declaration": false,
+    "declarationMap": false
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]
