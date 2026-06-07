@@ -1,0 +1,21 @@
+{
+  "name": "blockchain-watcher",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@repo/payment-core": "workspace:^",
+    "drizzle-orm": "^0.45.2",
+    "postgres": "^3.4.9"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^25.9.2",
+    "tsx": "^4.22.4",
+    "typescript": "5.9.2"
+  }
+}
