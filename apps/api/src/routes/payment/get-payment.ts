@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
 import { PaymentService } from "@repo/payment-core/src/services/payment-service.ts";
+import { CheckoutService } from "@repo/payment-core/src/services/checkout-service.ts";
 import { db } from "../../db";
 
 const service = new PaymentService(db);
+const checkoutService = new CheckoutService(db);
 
 export async function getPayment(req: Request, res: Response) {
   const { id } = req.params as { id: string };
@@ -12,5 +14,7 @@ export async function getPayment(req: Request, res: Response) {
     return res.status(404).json({ error: `Payment ${id} not found` });
   }
 
-  return res.json({ payment });
+  const checkout = await checkoutService.getCheckoutData(id);
+
+  return res.json({ payment, checkout });
 }
