@@ -11,3 +11,5 @@ export interface WalletState {
   chainId?: number;
   connector?: string;
 }
+
+export { shortHash, shortAddr, formatDate } from "./format";
