@@ -11,6 +11,7 @@ import {
   buildCheckoutUrl,
   paymentClient,
 } from "@repo/payment-core";
+import { useWallet } from "@repo/wallet-core";
 import { CopyButton } from "@repo/ui/copy-button";
 import { Button } from "@repo/ui/button";
 
@@ -19,6 +20,7 @@ interface CreatePaymentFormProps {
 }
 
 export function CreatePaymentForm({ onSuccess }: CreatePaymentFormProps) {
+  const { address } = useWallet();
   const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -38,9 +40,14 @@ export function CreatePaymentForm({ onSuccess }: CreatePaymentFormProps) {
   });
 
   const onSubmit = async (data: CreatePaymentSchema) => {
+    if (!address) {
+      setServerError("Connect your wallet before creating a payment.");
+      return;
+    }
+
     setServerError(null);
     try {
-      const { id } = await paymentClient.createPayment(data);
+      const { id } = await paymentClient.createPayment(data, address);
       setCheckoutUrl(buildCheckoutUrl(id));
       onSuccess?.(id);
       reset();

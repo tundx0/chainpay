@@ -7,10 +7,30 @@ import { Button } from "@repo/ui/button";
 import { CopyButton } from "@repo/ui/copy-button";
 
 const chainInfo = [
-  { id: 1, name: "Ethereum Mainnet", shortName: "Ethereum", color: "bg-indigo-500 text-indigo-400" },
-  { id: 8453, name: "Base", shortName: "Base", color: "bg-blue-500 text-blue-400" },
-  { id: 137, name: "Polygon", shortName: "Polygon", color: "bg-purple-500 text-purple-400" },
-  { id: 42161, name: "Arbitrum", shortName: "Arbitrum", color: "bg-cyan-500 text-cyan-400" },
+  {
+    id: 1,
+    name: "Ethereum Mainnet",
+    shortName: "Ethereum",
+    color: "bg-indigo-500 text-indigo-400",
+  },
+  {
+    id: 8453,
+    name: "Base",
+    shortName: "Base",
+    color: "bg-blue-500 text-blue-400",
+  },
+  {
+    id: 137,
+    name: "Polygon",
+    shortName: "Polygon",
+    color: "bg-purple-500 text-purple-400",
+  },
+  {
+    id: 42161,
+    name: "Arbitrum",
+    shortName: "Arbitrum",
+    color: "bg-cyan-500 text-cyan-400",
+  },
 ];
 
 export function WalletInfo() {
@@ -58,7 +78,9 @@ export function WalletInfo() {
 
       {/* Wallet Address Display */}
       <div className="flex flex-col gap-2">
-        <label className="text-xs font-bold text-zinc-500 tracking-wider uppercase">Active Address</label>
+        <label className="text-xs font-bold text-zinc-500 tracking-wider uppercase">
+          Active Address
+        </label>
         <div className="flex items-center justify-between p-4 bg-zinc-950/50 border border-zinc-800/80 rounded-2xl">
           <code className="text-zinc-200 font-mono text-sm tracking-wide sm:text-base">
             {address ? formatAddress(address) : "0x000...0000"}
@@ -72,18 +94,26 @@ export function WalletInfo() {
 
       {/* Current Network */}
       <div className="flex flex-col gap-2">
-        <label className="text-xs font-bold text-zinc-500 tracking-wider uppercase">Active Network</label>
+        <label className="text-xs font-bold text-zinc-500 tracking-wider uppercase">
+          Active Network
+        </label>
         <div className="flex items-center gap-3 p-4 bg-zinc-950/30 border border-zinc-850 rounded-2xl">
-          <span className={`h-2.5 w-2.5 rounded-full ${currentChain ? "bg-emerald-500" : "bg-red-500"}`} />
+          <span
+            className={`h-2.5 w-2.5 rounded-full ${currentChain ? "bg-emerald-500" : "bg-red-500"}`}
+          />
           <span className="font-semibold text-zinc-200">
-            {currentChain ? currentChain.name : `Unknown Network (ID: ${chainId})`}
+            {currentChain
+              ? currentChain.name
+              : `Unknown Network (ID: ${chainId})`}
           </span>
         </div>
       </div>
 
       {/* Chain Switcher */}
       <div className="flex flex-col gap-3">
-        <label className="text-xs font-bold text-zinc-500 tracking-wider uppercase">Switch Networks</label>
+        <label className="text-xs font-bold text-zinc-500 tracking-wider uppercase">
+          Switch Networks
+        </label>
         <div className="grid grid-cols-2 gap-2">
           {chainInfo.map((chain) => {
             const isCurrent = chainId === chain.id;
@@ -101,14 +131,31 @@ export function WalletInfo() {
                 } disabled:opacity-60`}
               >
                 <div className="flex items-center gap-2">
-                  <span className={`h-2 w-2 rounded-full ${isCurrent ? "bg-emerald-500" : chain.color.split(" ")[0]}`} />
+                  <span
+                    className={`h-2 w-2 rounded-full ${isCurrent ? "bg-emerald-500" : chain.color.split(" ")[0]}`}
+                  />
                   <span>{chain.shortName}</span>
                 </div>
 
                 {isSwitching && (
-                  <svg className="animate-spin h-4 w-4 text-indigo-400" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  <svg
+                    className="animate-spin h-4 w-4 text-indigo-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
                   </svg>
                 )}
               </Button>
@@ -119,4 +166,3 @@ export function WalletInfo() {
     </Card>
   );
 }
-

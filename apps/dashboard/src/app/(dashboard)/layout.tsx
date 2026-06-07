@@ -6,7 +6,11 @@ import { Topbar } from "../../components/layout/topbar";
 import { ConnectWallet } from "../../components/wallet/connect-wallet";
 import { useEffect, useState } from "react";
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { connected } = useWallet();
   const [mounted, setMounted] = useState(false);
 
@@ -18,11 +22,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return (
       <div className="flex min-h-screen items-center justify-center bg-bg text-text-secondary">
         <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-[spin_0.6s_linear_infinite]" />
-        <style dangerouslySetInnerHTML={{ __html: `
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
           @keyframes spin {
             to { transform: rotate(360deg); }
           }
-        `}} />
+        `,
+          }}
+        />
       </div>
     );
   }
@@ -50,7 +58,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="flex items-center gap-5 text-xs">
             <div className="flex items-center gap-1.5 text-text-secondary">
               <span className="cyber-pulse-dot" />
-              <span className="font-mono tracking-[0.05em] text-accent">SYS_ONLINE</span>
+              <span className="font-mono tracking-[0.05em] text-accent">
+                SYS_ONLINE
+              </span>
             </div>
             <div className="h-3 w-[1px] bg-border" />
             <span className="text-muted font-mono">V1.0.0_BETA</span>
@@ -66,10 +76,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 [ MERCHANT_PORTAL_GATEWAY ]
               </div>
               <h1 className="text-[clamp(36px,4.5vw,54px)] font-[900] tracking-[-0.04em] leading-[1.05] m-0 uppercase">
-                Settle payments <span className="text-accent">instantly</span>. Settle on-chain.
+                Settle payments <span className="text-accent">instantly</span>.
+                Settle on-chain.
               </h1>
               <p className="text-[15px] leading-1.6 text-text-secondary m-0 max-w-[520px]">
-                A high-performance crypto payment rail designed for modern businesses. Issue checkouts, request deposits, and track settlement volume on Base and Ethereum.
+                A high-performance crypto payment rail designed for modern
+                businesses. Issue checkouts, request deposits, and track
+                settlement volume on Base and Ethereum.
               </p>
             </div>
 
@@ -80,15 +93,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <span>STATE_STATUS</span>
               </div>
               <div className="flex justify-between py-1">
-                <span className="text-text-primary">01 // NON-CUSTODIAL ESCROW</span>
+                <span className="text-text-primary">
+                  01 // NON-CUSTODIAL ESCROW
+                </span>
                 <span className="text-accent">SECURE</span>
               </div>
               <div className="flex justify-between py-1">
-                <span className="text-text-primary">02 // BASE L2 LOW-FEE RAIL</span>
+                <span className="text-text-primary">
+                  02 // BASE L2 LOW-FEE RAIL
+                </span>
                 <span className="text-accent">ENABLED</span>
               </div>
               <div className="flex justify-between py-1">
-                <span className="text-text-primary">03 // FULL INVOICE LEDGER</span>
+                <span className="text-text-primary">
+                  03 // FULL INVOICE LEDGER
+                </span>
                 <span className="text-accent">ONLINE</span>
               </div>
             </div>
@@ -120,4 +139,3 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     </div>
   );
 }
-

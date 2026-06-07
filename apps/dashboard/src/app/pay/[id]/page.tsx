@@ -2,115 +2,74 @@
 
 import { use, useEffect, useState } from "react";
 import { paymentClient } from "@repo/payment-core";
-import type { PaymentRequest } from "@repo/payment-core";
-import { Button } from "@repo/ui/button";
+import type { PaymentRequest, CheckoutData } from "@repo/payment-core";
+import { CheckoutCard } from "../../../components/checkout/checkout-card";
 
-const STATUS_META = {
-  pending:   { label: "Awaiting Payment", color: "var(--warning)",  dot: "var(--warning)" },
-  completed: { label: "Completed",         color: "var(--success)",  dot: "var(--success)" },
-  failed:    { label: "Failed",            color: "var(--danger)",   dot: "var(--danger)" },
-  expired:   { label: "Expired",           color: "var(--text-muted)", dot: "var(--text-muted)" },
-};
-
-export default function CheckoutPage({ params }: { params: Promise<{ id: string }> }) {
+export default function CheckoutPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = use(params);
-  const [payment, setPayment] = useState<PaymentRequest | null>(null);
+  const [data, setData] = useState<{
+    payment: PaymentRequest;
+    checkout: CheckoutData;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     paymentClient
       .getPayment(id)
-      .then((r) => setPayment(r.payment))
-      .catch((e) => setError(e instanceof Error ? e.message : "Payment not found"))
+      .then((r) => {
+        if (r.payment && r.checkout) {
+          setData({ payment: r.payment, checkout: r.checkout });
+        } else {
+          setError("Incomplete checkout data returned from API.");
+        }
+      })
+      .catch((e) =>
+        setError(e instanceof Error ? e.message : "Payment not found"),
+      )
       .finally(() => setLoading(false));
   }, [id]);
 
-  const meta = payment ? STATUS_META[payment.status] : null;
-
   return (
     <div className="checkout-shell">
-      <div className="checkout-card fade-up">
-        {/* Header */}
-        <div className="checkout-header">
-          <div className="w-[26px] h-[26px] rounded-[6px] bg-accent flex items-center justify-center shrink-0">
-            <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
-              <path d="M2 9.5L7 2l1.5 4.5H12L7 12l1.5-4.5H2Z" fill="#000000" />
+      {loading && (
+        <div className="checkout-card cyber-glass p-8 flex flex-col items-center justify-center min-h-[300px] max-w-[400px] w-full border border-border/85 rounded-2xl">
+          <div className="w-10 h-10 rounded-full border-2 border-accent-border border-t-accent animate-spin mb-4" />
+          <span className="text-xs text-text-muted font-bold tracking-wider uppercase">
+            Loading Invoice...
+          </span>
+        </div>
+      )}
+
+      {error && (
+        <div className="checkout-card cyber-glass p-8 flex flex-col items-center justify-center min-h-[200px] max-w-[400px] w-full border border-danger-dim rounded-2xl text-center">
+          <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mb-4 border border-red-500/20">
+            <svg
+              className="w-6 h-6 text-red-500"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
+              />
             </svg>
           </div>
-          <span className="text-sm font-semibold text-text-primary tracking-[-0.2px]">
-            Chain<span className="text-muted font-normal">Pay</span>
+          <span className="text-sm font-bold text-red-400 mb-2">
+            Error Retrieving Invoice
           </span>
-
-          {meta && (
-            <span className={`badge badge-${payment?.status} ml-auto`}>
-              {meta.label}
-            </span>
-          )}
+          <p className="text-xs text-text-muted max-w-xs">{error}</p>
         </div>
+      )}
 
-        {/* Body */}
-        <div className="checkout-body">
-          {loading && (
-            <>
-              <div className="skeleton h-[38px] w-[140px] mb-2" />
-              <div className="skeleton h-4 w-20" />
-            </>
-          )}
-
-          {error && (
-            <div className="alert-error">{error}</div>
-          )}
-
-          {payment && (
-            <>
-              <div className="checkout-amount">
-                {Number(payment.amount).toLocaleString()}
-              </div>
-              <div className="checkout-currency">
-                {payment.currency} · {payment.network.charAt(0).toUpperCase() + payment.network.slice(1)}
-              </div>
-
-              {payment.description && (
-                <p className="mt-3 text-[13px] text-muted">
-                  {payment.description}
-                </p>
-              )}
-
-              <div className="checkout-meta">
-                <div className="checkout-meta-row">
-                  <span className="checkout-meta-key">Payment ID</span>
-                  <span className="mono-id checkout-meta-val">{payment.id}</span>
-                </div>
-                <div className="checkout-meta-row">
-                  <span className="checkout-meta-key">Network</span>
-                  <span className="checkout-meta-val capitalize">
-                    {payment.network}
-                  </span>
-                </div>
-                <div className="checkout-meta-row">
-                  <span className="checkout-meta-key">Created</span>
-                  <span className="checkout-meta-val">
-                    {new Date(payment.createdAt).toLocaleDateString("en-GB", {
-                      day: "numeric", month: "short", year: "numeric",
-                    })}
-                  </span>
-                </div>
-              </div>
-
-              {payment.status === "pending" && (
-                <Button
-                  id="pay-now-button"
-                  variant="primary"
-                  className="w-full justify-center mt-5 py-3 px-4 text-sm"
-                >
-                  Pay Now
-                </Button>
-              )}
-            </>
-          )}
-        </div>
-      </div>
+      {data && <CheckoutCard payment={data.payment} checkout={data.checkout} />}
     </div>
   );
 }

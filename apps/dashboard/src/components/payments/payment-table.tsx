@@ -3,14 +3,10 @@
 import type { PaymentRequest } from "@repo/payment-core";
 
 const STATUS_STYLES: Record<string, string> = {
-  pending:
-    "bg-amber-500/15 text-amber-400 border border-amber-500/30",
-  completed:
-    "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30",
-  failed:
-    "bg-red-500/15 text-red-400 border border-red-500/30",
-  expired:
-    "bg-zinc-700/40 text-zinc-400 border border-zinc-700",
+  pending: "bg-amber-500/15 text-amber-400 border border-amber-500/30",
+  completed: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30",
+  failed: "bg-red-500/15 text-red-400 border border-red-500/30",
+  expired: "bg-zinc-700/40 text-zinc-400 border border-zinc-700",
 };
 
 interface PaymentTableProps {
@@ -34,24 +30,26 @@ export function PaymentTable({ payments }: PaymentTableProps) {
       <table className="min-w-full text-sm">
         <thead>
           <tr className="border-b border-zinc-800 bg-zinc-900/60">
-            {["ID", "Amount", "Currency", "Network", "Status", "Created At"].map(
-              (col) => (
-                <th
-                  key={col}
-                  className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500"
-                >
-                  {col}
-                </th>
-              )
-            )}
+            {[
+              "ID",
+              "Amount",
+              "Currency",
+              "Network",
+              "Status",
+              "Created At",
+            ].map((col) => (
+              <th
+                key={col}
+                className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500"
+              >
+                {col}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody className="divide-y divide-zinc-800/60 bg-zinc-900/20">
           {payments.map((p) => (
-            <tr
-              key={p.id}
-              className="transition-colors hover:bg-zinc-800/30"
-            >
+            <tr key={p.id} className="transition-colors hover:bg-zinc-800/30">
               <td className="px-4 py-3.5 font-mono text-xs text-indigo-400">
                 {p.id}
               </td>

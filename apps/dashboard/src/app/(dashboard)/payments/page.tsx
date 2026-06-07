@@ -1,37 +1,49 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { paymentClient } from "@repo/payment-core";
 import type { PaymentRequest } from "@repo/payment-core";
+import { useWallet } from "@repo/wallet-core";
 import { Button } from "@repo/ui/button";
 
 export default function PaymentsPage() {
+  const { address } = useWallet();
   const [payments, setPayments] = useState<PaymentRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const load = async () => {
+  const load = useCallback(async () => {
+    if (!address) {
+      setPayments([]);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {
-      const data = await paymentClient.listPayments();
+      const data = await paymentClient.listPayments(address);
       setPayments(data.payments);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load");
     } finally {
       setLoading(false);
     }
-  };
+  }, [address]);
 
-  useEffect(() => { void load(); }, []);
+  useEffect(() => {
+    void load();
+  }, [load]);
 
   return (
     <div className="fade-up flex flex-col gap-6">
       <div className="page-header mb-0">
         <div>
           <h1 className="page-title uppercase tracking-[-0.02em]">Ledger</h1>
-          <p className="page-desc">Complete cryptographic payment audit logs.</p>
+          <p className="page-desc">
+            Complete cryptographic payment audit logs.
+          </p>
         </div>
         <div className="flex gap-3">
           <Button
@@ -43,8 +55,20 @@ export default function PaymentsPage() {
           >
             {loading ? "SYS_SYNCING..." : "SYNC_LEDGER"}
           </Button>
-          <Link id="create-payment-link" href="/payments/new" className="btn btn-primary font-mono text-[11px]">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" className="mr-1">
+          <Link
+            id="create-payment-link"
+            href="/payments/new"
+            className="btn btn-primary font-mono text-[11px]"
+          >
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 12 12"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              className="mr-1"
+            >
               <path d="M6 1v10M1 6h10" strokeLinecap="round" />
             </svg>
             NEW_INVOICE
@@ -64,7 +88,10 @@ export default function PaymentsPage() {
           <div className="table-empty">
             <p className="m-0 font-mono text-[13px]">NO_LEDGER_RECORDS_FOUND</p>
             <p className="mt-[6px] text-xs">
-              <Link href="/payments/new" className="text-accent no-underline font-mono">
+              <Link
+                href="/payments/new"
+                className="text-accent no-underline font-mono"
+              >
                 GENERATE_INVOICE_LOGS &rarr;
               </Link>
             </p>
@@ -84,20 +111,38 @@ export default function PaymentsPage() {
             </thead>
             <tbody>
               {payments.map((p) => (
-                <tr key={p.id}>
-                  <td><span className="mono-id">{p.id}</span></td>
+                <tr
+                  key={p.id}
+                  className="cursor-pointer"
+                  onClick={() => {
+                    window.location.href = `/payments/${p.id}`;
+                  }}
+                >
+                  <td>
+                    <span className="mono-id">{p.id}</span>
+                  </td>
                   <td className="text-text-primary font-semibold font-mono">
                     {Number(p.amount).toLocaleString()}
                   </td>
                   <td className="font-mono">{p.currency}</td>
-                  <td className="uppercase text-[11px] font-mono text-text-secondary">{p.network}</td>
-                  <td className="text-muted max-w-[180px] truncate font-mono text-xs">
-                    {p.description ?? <span className="text-border">NULL_DESC</span>}
+                  <td className="uppercase text-[11px] font-mono text-text-secondary">
+                    {p.network}
                   </td>
-                  <td><span className={`badge badge-${p.status}`}>{p.status}</span></td>
+                  <td className="text-muted max-w-[180px] truncate font-mono text-xs">
+                    {p.description ?? (
+                      <span className="text-border">NULL_DESC</span>
+                    )}
+                  </td>
+                  <td>
+                    <span className={`badge badge-${p.status}`}>
+                      {p.status}
+                    </span>
+                  </td>
                   <td className="text-muted font-mono text-xs">
                     {new Date(p.createdAt).toLocaleDateString("en-GB", {
-                      day: "numeric", month: "short", year: "numeric",
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
                     })}
                   </td>
                 </tr>

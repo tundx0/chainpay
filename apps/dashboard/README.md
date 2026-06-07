@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ChainPay Merchant Dashboard
 
-## Getting Started
+This is the Next.js-based merchant dashboard application for **ChainPay**. It provides merchants with tools to manage API keys, view transaction logs, and track live cryptocurrency payment confirmations in real-time.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🎨 Design System & Visuals
+
+- **Theme**: Sleek cyberpunk/terminal aesthetic.
+- **Styling**: Built with **Tailwind CSS v4** utilizing custom utility properties.
+- **Key Design Tokens**:
+  - `cyber-glass`: Micro-gloss frosted panel container backgrounds.
+  - `cyber-pulse-dot`: Glowing status indicators.
+  - `cyber-telemetry-num`: Customized monospace layouts for cryptographic IDs and numbers.
+
+---
+
+## 📦 Features
+
+- **Live Transactions Listing (`/payments`)**: Displays a real-time list of all payment logs with network, amount, and payment statuses.
+- **Payment Details Page (`/payments/[id]`)**:
+  - Interactive multi-step status updates (`Detected` ➔ `Confirming` ➔ `Confirmed`).
+  - Automatic API polling (every 5 seconds) which stops when terminal states (`completed`, `failed`, `expired`) are reached.
+  - Dynamic confirmation requirements fetched per-network.
+
+---
+
+## 🛠 Getting Started
+
+### Run Development Server
+
+To run only the dashboard locally:
+
+```sh
+pnpm --filter dashboard dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Build for Production
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+To build a production package:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```sh
+pnpm --filter dashboard build
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 📂 Component Layout Guidelines
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+To maintain clean and modular code, dashboard components are organized as follows:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `src/components/ui/`: Contains generic, primitive component layouts (e.g., `MetaRow`, `SectionCard`).
+- `src/components/payments/`: Contains specific payment domains and logic templates (e.g., `ConfirmationProgress`, `PaymentDetail`).
+- `packages/shared/src/format.ts`: Shared formatting functions (e.g., `shortAddr`, `shortHash`, `formatDate`) imported from the monorepo workspace.

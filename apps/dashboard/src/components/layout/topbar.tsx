@@ -4,26 +4,42 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useWallet } from "@repo/wallet-core";
 import { Button } from "@repo/ui/button";
+import { shortAddr } from "@repo/shared";
 
-const CRUMBS: Record<string, { label: string; parent?: { label: string; href: string } }> = {
+const CRUMBS: Record<
+  string,
+  { label: string; parent?: { label: string; href: string } }
+> = {
   "/": { label: "Overview" },
   "/payments": { label: "Payments" },
-  "/payments/new": { label: "New", parent: { label: "Payments", href: "/payments" } },
+  "/payments/new": {
+    label: "New",
+    parent: { label: "Payments", href: "/payments" },
+  },
 };
+
+function shortId(id: string) {
+  // Show first 8 chars if it looks like a UUID, otherwise show whole id
+  return id.length > 16 ? `${id.slice(0, 8)}…` : id;
+}
 
 export function Topbar() {
   const path = usePathname();
   const { address, disconnect } = useWallet();
 
-  // dynamic /pay/[id] crumb
+  // dynamic /pay/[id] crumb (checkout)
   const isPay = path.startsWith("/pay/");
-  const id = isPay ? path.split("/pay/")[1] : null;
+  // dynamic /payments/[id] crumb (merchant detail)
+  const isPaymentDetail =
+    path.startsWith("/payments/") && path !== "/payments/new";
+
+  const rawId = isPay
+    ? (path.split("/pay/")[1] ?? null)
+    : isPaymentDetail
+      ? (path.split("/payments/")[1] ?? null)
+      : null;
 
   const crumb = CRUMBS[path];
-
-  const formatAddress = (addr: string) => {
-    return `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`;
-  };
 
   return (
     <header className="app-topbar cyber-glass border-b border-border relative z-50">
@@ -32,7 +48,17 @@ export function Topbar() {
           <>
             <span className="breadcrumb-item">Checkout</span>
             <span className="breadcrumb-sep text-accent">/</span>
-            <span className="breadcrumb-current mono-id">{id}</span>
+            <span className="breadcrumb-current mono-id">{rawId}</span>
+          </>
+        ) : isPaymentDetail ? (
+          <>
+            <Link href="/payments" className="breadcrumb-item">
+              Payments
+            </Link>
+            <span className="breadcrumb-sep text-accent">/</span>
+            <span className="breadcrumb-current mono-id">
+              {rawId ? shortId(rawId) : "Detail"}
+            </span>
           </>
         ) : crumb?.parent ? (
           <>
@@ -43,7 +69,9 @@ export function Topbar() {
             <span className="breadcrumb-current">{crumb.label}</span>
           </>
         ) : (
-          <span className="breadcrumb-current">{crumb?.label ?? "Dashboard"}</span>
+          <span className="breadcrumb-current">
+            {crumb?.label ?? "Dashboard"}
+          </span>
         )}
       </nav>
 
@@ -51,7 +79,7 @@ export function Topbar() {
         {address && (
           <div className="flex items-center gap-2">
             <span className="font-mono text-[11px] text-text-secondary bg-surface border border-border rounded-[6px] py-[4px] px-[8px]">
-              {formatAddress(address)}
+              {shortAddr(address)}
             </span>
             <Button
               onClick={() => void disconnect()}

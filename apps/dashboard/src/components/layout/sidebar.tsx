@@ -8,7 +8,12 @@ const NAV = [
     label: "Overview",
     href: "/",
     icon: (
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <svg
+        viewBox="0 0 16 16"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      >
         <rect x="1.5" y="1.5" width="5" height="5" rx="1.25" />
         <rect x="9.5" y="1.5" width="5" height="5" rx="1.25" />
         <rect x="1.5" y="9.5" width="5" height="5" rx="1.25" />
@@ -20,7 +25,12 @@ const NAV = [
     label: "Payments",
     href: "/payments",
     icon: (
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <svg
+        viewBox="0 0 16 16"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      >
         <rect x="1.5" y="3.5" width="13" height="9" rx="1.5" />
         <path d="M1.5 6.5h13" strokeLinecap="round" />
         <path d="M4.5 9.5h3" strokeLinecap="round" />
@@ -70,8 +80,18 @@ export function Sidebar() {
 
       {/* Footer */}
       <div className="sidebar-footer">
-        <Link href="/payments/new" className="btn btn-primary w-full justify-center">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2">
+        <Link
+          href="/payments/new"
+          className="btn btn-primary w-full justify-center"
+        >
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <path d="M6 1v10M1 6h10" strokeLinecap="round" />
           </svg>
           New Payment
