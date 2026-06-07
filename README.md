@@ -18,6 +18,7 @@ chainpay/
 └── packages/
     ├── payment-core/     # Core payment logic, schema definitions, and token configurations
     ├── wallet-core/      # Wallet connectivity logic, Wagmi config, and chain definitions
+    ├── widget-sdk/       # SDK UMD, ESM, CommonJS and React/React Native widget loaders [NEW]
     ├── shared/           # Monorepo-wide shared utility functions (e.g., formatting)
     ├── ui/               # Shared component design system primitives
     ├── eslint-config/    # Shared ESLint linting configurations
@@ -38,13 +39,17 @@ chainpay/
   - **Dynamic Requirements**: Automatically scales confirmation requirements based on the underlying network configurations (e.g., 3 confirmations on mainnet, 1 confirmation on localhost).
   - **Telemetry Details**: Displays complete payment metadata including short-form transaction hashes, wallet addresses, token symbols, exchange rates, and transaction dates.
 
-### 2. Core Services & Shared Packages
+### 2. Embeddable Widget SDK (`packages/widget-sdk`)
 
-- **Blockchain Watcher**: Dedicated background watcher matching on-chain events to database records.
-- **@repo/shared**: Highly reusable formatting helpers (`shortHash`, `shortAddr`, `formatDate`) imported across all apps to prevent utility duplication.
-- **Component Architecture Standards**:
-  - `components/ui/`: Houses primitive layouts and design blocks (e.g., `MetaRow`, `SectionCard`).
-  - `components/payments/`: Contains domain-specific modules (e.g., `ConfirmationProgress`, `PaymentDetail`).
+- **Framework-Agnostic Core**: Embeddable modal iframe container with custom backdrop styling, handling responsive layout adjustments and secure cross-origin postMessage communications.
+- **Library Formats**: Bundles IIFE/UMD (`widget.js` compiled to public assets), ESM, and CommonJS formats.
+- **Framework Adapters**: Pre-built bindings for React hook environments (`useChainPayWidget`) and mobile-friendly React Native containers (`ChainPayCheckout`).
+
+### 3. Durable Workflows & Core Services
+
+- **Durable Payment Lifecycles**: payment creation, polling events, block confirmation counts, and webhook notifications are managed via durable state workflows in **Inngest** to avoid fragile cron loops.
+- **Blockchain Watcher**: Dedicated background watcher matching on-chain events to database records and emitting event triggers directly to the workflow runner.
+- **Signed Webhook Deliveries**: Sign webhooks using HMAC-SHA256 signatures to securely deliver confirmations to merchant servers with automatic exponential backoffs.
 
 ---
 
@@ -99,3 +104,31 @@ To set up Remote Caching with Vercel:
 pnpm exec turbo login
 pnpm exec turbo link
 ```
+
+---
+
+## 🚢 Production VPS Deployment
+
+ChainPay supports a fully containerized deployment model for VPS hosting (e.g. DigitalOcean, Hetzner, AWS EC2) using **Docker Compose** and **Caddy** with a self-hosted instance of **Inngest**. The landing page, merchant dashboard, and documentation portals are hosted on **Vercel**, while backend API and watchers run on the VPS.
+
+### 1. Generating Credentials
+We provide a utility script to generate all required passwords, secrets, event keys, and Caddy password hashes. To generate or rotate your production environment file, run:
+```sh
+node scripts/generate-env.js
+```
+This generates a secure `.env.production` file at the root. You can force regeneration using the `--force` flag.
+
+### 2. DNS Config
+Point two DNS `A` records to your VPS IP:
+- `api.nodecheckout.com` (maps to the Express API)
+- `inngest.nodecheckout.com` (maps to the Inngest Dev Server dashboard)
+
+### 3. Deploying
+1. Copy the codebase onto your VPS.
+2. Edit `.env.production` on the server to configure your EVM node `RPC_BASE_URL` (it defaults to `nodecheckout.com` domains automatically).
+3. Launch all services using Docker Compose:
+   ```sh
+   docker compose -f docker-compose.prod.yml up -d --build
+   ```
+4. Access `https://inngest.nodecheckout.com`, log in with `admin` and your generated dashboard password, and sync your application handler by registering the endpoint `http://api:4000/api/inngest` (or `https://api.nodecheckout.com/api/inngest`).
+
