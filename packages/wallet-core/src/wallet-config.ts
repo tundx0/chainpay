@@ -1,30 +1,62 @@
-import { createConfig, http } from "wagmi";
+import { createConfig, http, type Config } from "wagmi";
 
-import { injected, walletConnect, coinbaseWallet } from "wagmi/connectors";
+import {
+  injected,
+  walletConnect,
+  coinbaseWallet,
+  metaMask,
+} from "wagmi/connectors";
 
-import { mainnet, base, polygon, arbitrum } from "wagmi/chains";
+import { mainnet, base, polygon, arbitrum, foundry } from "wagmi/chains";
 
 import { supportedChains } from "./constants/chains";
 
-export const wagmiConfig = createConfig({
-  chains: supportedChains,
+interface CreateWagmiConfigOptions {
+  includeWalletConnect?: boolean;
+}
 
-  connectors: typeof window !== "undefined" ? [
+export function createWagmiConfig(
+  wcProjectId?: string,
+  { includeWalletConnect = false }: CreateWagmiConfigOptions = {},
+): Config {
+  const projectId = wcProjectId ?? process.env.NEXT_PUBLIC_WC_ID;
+
+  const connectors = [
+    metaMask(),
     injected(),
-
-    walletConnect({
-      projectId: process.env.NEXT_PUBLIC_WC_ID || "ssr-fallback-id",
-    }),
-
+    ...(includeWalletConnect && projectId
+      ? [
+          walletConnect({
+            projectId,
+            showQrModal: true,
+            metadata: {
+              name: "ChainPay",
+              description: "Crypto payment infrastructure for modern merchants",
+              url:
+                typeof window !== "undefined"
+                  ? window.location.origin
+                  : "http://localhost:3000",
+              icons: [],
+            },
+          }),
+        ]
+      : []),
     coinbaseWallet({
       appName: "ChainPay",
     }),
-  ] : [],
+  ];
 
-  transports: {
-    [mainnet.id]: http(),
-    [base.id]: http(),
-    [polygon.id]: http(),
-    [arbitrum.id]: http(),
-  },
-});
+  return createConfig({
+    chains: supportedChains,
+
+    connectors,
+
+    transports: {
+      [mainnet.id]: http(),
+      [base.id]: http(),
+      [polygon.id]: http(),
+      [arbitrum.id]: http(),
+      [foundry.id]: http("http://127.0.0.1:8545"), // Anvil local node
+    },
+  });
+}

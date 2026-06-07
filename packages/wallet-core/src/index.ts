@@ -1,5 +1,9 @@
 export * from "./hooks/use-wallet";
+export * from "./hooks/use-send-payment";
+export * from "./hooks/use-rates";
+export * from "./hooks/use-payments";
 export * from "./providers/wallet-provider";
+export * from "./providers/query-provider";
 export * from "./constants/chains";
 export * from "./types/wallet";
-
+export * from "./types/payment-send";
