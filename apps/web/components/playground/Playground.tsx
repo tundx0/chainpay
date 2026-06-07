@@ -5,6 +5,9 @@ import { CopyButton } from "@repo/ui/copy-button";
 
 export default function Playground() {
   const [activeTab, setActiveTab] = useState<"react" | "node" | "curl">("react");
+  
+  const dashboardUrl = process.env.NEXT_PUBLIC_DASHBOARD_URL ?? "http://localhost:3000";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
 
   const codeSnippets = {
     react: `import { CheckoutCard } from "@repo/ui";
@@ -29,7 +32,7 @@ const session = await checkout.createSession({
 });
 
 console.log("Pay URL:", session.checkoutUrl);`,
-    curl: `curl -X POST http://localhost:3000/api/payments \\
+    curl: `curl -X POST ${apiUrl}/payments \\
   -H "Content-Type: application/json" \\
   -d '{
     "amount": "1.5",
@@ -51,7 +54,36 @@ console.log("Pay URL:", session.checkoutUrl);`,
         <p className="text-text-secondary text-[14px] leading-relaxed">
           We provide clean React components, backend Node libraries, and raw API wrappers to fit any stack. Connect your database, seed merchant addresses, and start receiving secure payments directly into your self-custody wallet.
         </p>
-        <div className="flex flex-col gap-2.5 mt-2">
+        <div className="flex gap-4 items-center mt-1">
+          <button
+            onClick={() => {
+              const SCRIPT_URL = `${dashboardUrl}/widget.js`;
+              const openWidget = () => {
+                (window as any).ChainPay?.open({
+                  paymentId: "pay_demo",
+                  checkoutUrl: dashboardUrl,
+                  onSuccess: (data: any) => console.log("Demo paid:", data),
+                  onClose: () => console.log("Demo closed"),
+                });
+              };
+              if (!(window as any).ChainPay) {
+                const script = document.createElement("script");
+                script.src = SCRIPT_URL;
+                script.onload = openWidget;
+                document.body.appendChild(script);
+              } else {
+                openWidget();
+              }
+            }}
+            className="bg-accent text-bg hover:bg-accent-hover transition-colors font-bold font-mono text-[11px] uppercase tracking-wider py-2.5 px-4 rounded-xl cursor-pointer flex items-center gap-1.5 border border-transparent shadow-[0_0_15px_rgba(204,255,0,0.1)]"
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            Launch Demo Widget
+          </button>
+        </div>
+        <div className="flex flex-col gap-2.5 mt-4">
           <div className="flex items-center gap-3 text-xs text-text-secondary">
             <span className="h-1.5 w-1.5 rounded-full bg-accent" />
             <span>Zero configuration required</span>
@@ -138,7 +170,7 @@ console.log("Pay URL:", session.checkoutUrl);`,
 
             {activeTab === "curl" && (
               <code>
-                curl -X POST http://localhost:3000/api/payments \<br />
+                curl -X POST {apiUrl}/payments \<br />
                 {"  "}-H <span className="text-[#CCFF00]">"Content-Type: application/json"</span> \<br />
                 {"  "}-d {"'{"}<br />
                 {"    "}<span className="text-text-muted">"amount"</span>: <span className="text-[#CCFF00]">"1.5"</span>,<br />

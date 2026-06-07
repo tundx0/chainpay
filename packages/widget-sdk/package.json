@@ -1,0 +1,41 @@
+{
+  "name": "@repo/widget-sdk",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.mjs",
+      "require": "./dist/react.js"
+    },
+    "./native": {
+      "types": "./dist/native.d.ts",
+      "import": "./dist/native.mjs",
+      "require": "./dist/native.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts src/react.ts src/native.ts --format cjs,esm --dts && tsup src/index.ts --format iife --minify --global-name ChainPay && node scripts/copy-widget.js",
+    "check-types": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-native-webview": ">=13.0.0"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^22.15.3",
+    "@types/react": "19.2.2",
+    "react": "19.2.4",
+    "react-native-webview": "^13.13.2",
+    "tsup": "^8.0.2",
+    "typescript": "5.9.2"
+  }
+}

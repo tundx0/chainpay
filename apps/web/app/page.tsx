@@ -18,7 +18,9 @@ export default function LandingPage() {
     USDC: 1,
     USDT: 1,
   };
-  const lastUpdated = dataUpdatedAt ? new Date(dataUpdatedAt).toLocaleTimeString() : "";
+  const lastUpdated = dataUpdatedAt
+    ? new Date(dataUpdatedAt).toLocaleTimeString()
+    : "";
 
   return (
     <div className="min-h-screen bg-bg text-text-primary flex flex-col font-inter">
@@ -64,21 +66,34 @@ export default function LandingPage() {
               during invoice creation
             </h2>
             <p className="text-text-secondary text-[14px] leading-relaxed">
-              When standard invoices are settled, the processor computes exchange rates with CoinGecko simple price services and persists the exact historical USD valuation in Postgres immediately on payment validation. 
+              When standard invoices are settled, the processor computes
+              exchange rates with CoinGecko simple price services and persists
+              the exact historical USD valuation in Postgres immediately on
+              payment validation.
             </p>
-            <div className="h-[1px] bg-border my-2" />
+            <div className="h-px bg-border my-2" />
             <div className="flex gap-6">
               <div>
-                <span className="block text-xl font-bold font-mono text-accent">0%</span>
+                <span className="block text-xl font-bold font-mono text-accent">
+                  0%
+                </span>
                 <span className="text-xs text-text-muted">Platform cut</span>
               </div>
               <div>
-                <span className="block text-xl font-bold font-mono text-text-primary">15s</span>
-                <span className="text-xs text-text-muted">Telemetry cache sync</span>
+                <span className="block text-xl font-bold font-mono text-text-primary">
+                  15s
+                </span>
+                <span className="text-xs text-text-muted">
+                  Telemetry cache sync
+                </span>
               </div>
               <div>
-                <span className="block text-xl font-bold font-mono text-text-primary">EVM</span>
-                <span className="text-xs text-text-muted">Multichain native</span>
+                <span className="block text-xl font-bold font-mono text-text-primary">
+                  EVM
+                </span>
+                <span className="text-xs text-text-muted">
+                  Multichain native
+                </span>
               </div>
             </div>
           </div>

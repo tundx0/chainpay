@@ -1,9 +1,22 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { paymentClient } from "@repo/payment-core";
 import type { PaymentRequest, CheckoutData } from "@repo/payment-core";
 import { CheckoutCard } from "../../../components/checkout/checkout-card";
+
+function CheckoutContent({
+  payment,
+  checkout,
+}: {
+  payment: PaymentRequest;
+  checkout: CheckoutData;
+}) {
+  const searchParams = useSearchParams();
+  const isEmbedded = searchParams.get("embed") === "true";
+  return <CheckoutCard payment={payment} checkout={checkout} isEmbedded={isEmbedded} />;
+}
 
 export default function CheckoutPage({
   params,
@@ -69,7 +82,20 @@ export default function CheckoutPage({
         </div>
       )}
 
-      {data && <CheckoutCard payment={data.payment} checkout={data.checkout} />}
+      {data && (
+        <Suspense
+          fallback={
+            <div className="checkout-card cyber-glass p-8 flex flex-col items-center justify-center min-h-[300px] max-w-[400px] w-full border border-border/85 rounded-2xl">
+              <div className="w-10 h-10 rounded-full border-2 border-accent-border border-t-accent animate-spin mb-4" />
+              <span className="text-xs text-text-muted font-bold tracking-wider uppercase">
+                Loading...
+              </span>
+            </div>
+          }
+        >
+          <CheckoutContent payment={data.payment} checkout={data.checkout} />
+        </Suspense>
+      )}
     </div>
   );
 }

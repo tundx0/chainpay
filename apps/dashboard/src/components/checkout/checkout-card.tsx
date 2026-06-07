@@ -13,6 +13,7 @@ import type { PaymentRequest, CheckoutData } from "@repo/payment-core";
 interface CheckoutCardProps {
   payment: PaymentRequest;
   checkout: CheckoutData;
+  isEmbedded?: boolean;
 }
 
 type TabType = "qr" | "details" | "uri";
@@ -26,7 +27,7 @@ const STATUS_META = {
   expired: { label: "Expired", badgeClass: "badge-expired" },
 };
 
-export function CheckoutCard({ payment, checkout }: CheckoutCardProps) {
+export function CheckoutCard({ payment, checkout, isEmbedded = false }: CheckoutCardProps) {
   const { address } = useWallet();
   const [activeTab, setActiveTab] = useState<TabType>("qr");
   const [status, setStatus] = useState<
@@ -63,6 +64,27 @@ export function CheckoutCard({ payment, checkout }: CheckoutCardProps) {
     const interval = setInterval(() => void poll(), 5_000);
     return () => clearInterval(interval);
   }, [status, payment.id]);
+
+  // Dispatch postMessage events when payment becomes completed
+  useEffect(() => {
+    if (serverStatus === "completed") {
+      const msg = {
+        type: "chainpay:success",
+        data: { paymentId: payment.id, txHash }
+      };
+      
+      window.parent.postMessage(msg, "*");
+      (window as any).ReactNativeWebView?.postMessage(JSON.stringify(msg));
+      (window as any).webkit?.messageHandlers?.chainpay?.postMessage(JSON.stringify(msg));
+    }
+  }, [serverStatus, payment.id, txHash]);
+
+  const handleCancel = () => {
+    const msg = { type: "chainpay:close" };
+    window.parent.postMessage(msg, "*");
+    (window as any).ReactNativeWebView?.postMessage(JSON.stringify(msg));
+    (window as any).webkit?.messageHandlers?.chainpay?.postMessage(JSON.stringify(msg));
+  };
 
   const handlePayStart = () => {
     setStatus("processing");
@@ -116,11 +138,23 @@ export function CheckoutCard({ payment, checkout }: CheckoutCardProps) {
 
       <div className="checkout-header border-b border-border/80 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="sidebar-logo-mark h-6 w-6">
-            <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
-              <path d="M2 9.5L7 2l1.5 4.5H12L7 12l1.5-4.5H2Z" fill="#000000" />
-            </svg>
-          </div>
+          {isEmbedded ? (
+            <button
+              onClick={handleCancel}
+              className="p-1 rounded hover:bg-zinc-800/50 text-text-muted hover:text-text-primary transition-colors cursor-pointer mr-1 flex items-center justify-center border border-transparent"
+              title="Cancel checkout"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M18 6 6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          ) : (
+            <div className="sidebar-logo-mark h-6 w-6">
+              <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                <path d="M2 9.5L7 2l1.5 4.5H12L7 12l1.5-4.5H2Z" fill="#000000" />
+              </svg>
+            </div>
+          )}
           <span className="sidebar-logo-text text-sm">
             Chain<span>Pay</span>
           </span>

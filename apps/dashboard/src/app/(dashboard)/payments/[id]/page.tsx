@@ -14,6 +14,8 @@ export default function PaymentDetailPage() {
   const router = useRouter();
 
   const [payment, setPayment] = useState<PaymentRequest | null>(null);
+  const [workflows, setWorkflows] = useState<any[]>([]);
+  const [webhooks, setWebhooks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,6 +32,8 @@ export default function PaymentDetailPage() {
     try {
       const data = await paymentClient.getPayment(id);
       setPayment(data.payment);
+      setWorkflows(data.workflows ?? []);
+      setWebhooks(data.webhooks ?? []);
       setError(null);
 
       // Stop polling once the payment reaches a terminal state
@@ -139,7 +143,12 @@ export default function PaymentDetailPage() {
       </div>
 
       {/* Detail cards */}
-      <PaymentDetail payment={payment} isLive={isLive} />
+      <PaymentDetail
+        payment={payment}
+        isLive={isLive}
+        workflows={workflows}
+        webhooks={webhooks}
+      />
     </div>
   );
 }

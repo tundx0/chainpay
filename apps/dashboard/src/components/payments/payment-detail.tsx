@@ -16,9 +16,16 @@ import { ConfirmationProgress } from "./confirmation-progress";
 interface PaymentDetailProps {
   payment: PaymentRequest;
   isLive: boolean;
+  workflows?: any[];
+  webhooks?: any[];
 }
 
-export function PaymentDetail({ payment, isLive }: PaymentDetailProps) {
+export function PaymentDetail({
+  payment,
+  isLive,
+  workflows = [],
+  webhooks = [],
+}: PaymentDetailProps) {
   const required = getRequiredConfirmations(payment.network as Network);
   const explorerTxUrl = payment.txHash
     ? buildExplorerTxUrl(payment.network as Network, payment.txHash)
@@ -177,6 +184,77 @@ export function PaymentDetail({ payment, isLive }: PaymentDetailProps) {
             {formatDate(payment.confirmedAt)}
           </span>
         </MetaRow>
+      </SectionCard>
+
+      {/* Durable Workflows observability */}
+      <SectionCard title="Durable Workflow Trace">
+        {workflows.length === 0 ? (
+          <p className="text-xs font-mono text-muted py-1">
+            NO_WORKFLOW_TRACES_YET — workflow initialization pending.
+          </p>
+        ) : (
+          <div className="flex flex-col gap-3.5 my-1">
+            {workflows.map((wf) => (
+              <div key={wf.id} className="flex flex-col gap-1 border-b border-border/40 pb-2 last:border-0 last:pb-0">
+                <div className="flex justify-between items-center">
+                  <span className="font-mono text-xxs font-bold text-accent uppercase tracking-wider">
+                    {wf.state.replace(/_/g, " ")}
+                  </span>
+                  <span className="text-[10px] text-muted font-mono">
+                    {formatDate(wf.createdAt)}
+                  </span>
+                </div>
+                <p className="text-xs text-text-secondary leading-relaxed m-0 font-sans">
+                  {wf.stepLog}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </SectionCard>
+
+      {/* Webhook Delivery observability */}
+      <SectionCard title="Webhook Deliveries">
+        {webhooks.length === 0 ? (
+          <p className="text-xs font-mono text-muted py-1">
+            NO_WEBHOOKS_DISPATCHED — payment not yet completed or no webhook registered.
+          </p>
+        ) : (
+          <div className="flex flex-col gap-4 my-1">
+            {webhooks.map((wh) => (
+              <div key={wh.id} className="flex flex-col gap-2 border-b border-border/40 pb-3 last:border-0 last:pb-0">
+                <div className="flex justify-between items-center">
+                  <span className="font-mono text-xs font-semibold text-text-primary">
+                    Attempt #{wh.attemptNumber}
+                  </span>
+                  <span className={`badge text-[10px] py-0.5 px-2 font-mono uppercase font-bold rounded ${wh.status === "success" ? "bg-accent-dim text-accent-hover border border-accent/20" : "bg-warning/10 text-warning border border-warning/20"}`}>
+                    {wh.status}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1.5 font-mono text-[11px] text-text-secondary">
+                  <div className="flex justify-between">
+                    <span className="text-muted">URL:</span>
+                    <span className="text-right break-all max-w-[280px]">{wh.url}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted">Status:</span>
+                    <span>{wh.statusCode ?? "CONNECTION_TIMEOUT"}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted">Time:</span>
+                    <span>{formatDate(wh.createdAt)}</span>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1 mt-1">
+                  <span className="font-mono text-[10px] text-muted">[ RESPONSE_BODY ]</span>
+                  <pre className="bg-[#0e0e11] text-text-secondary border border-border p-2 rounded text-[10px] font-mono whitespace-pre-wrap break-all max-h-[80px] overflow-y-auto">
+                    {wh.responseBody || "Empty Response"}
+                  </pre>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </SectionCard>
     </div>
   );
