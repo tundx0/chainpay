@@ -1,159 +1,101 @@
-# Turborepo starter
+# ChainPay
 
-This Turborepo starter is maintained by the Turborepo core team.
+ChainPay is an advanced, developer-first cryptocurrency payment gateway and processing platform. Built as a high-performance monorepo using **pnpm workspaces** and **Turborepo**, it features a cyberpunk/terminal-inspired merchant dashboard, automated blockchain monitoring, and an API/SDK service layer.
 
-## Using this example
+---
 
-Run the following command:
+## 🏗 Repository Structure
 
-```sh
-npx create-turbo@latest
+```
+chainpay/
+├── apps/
+│   ├── dashboard/        # Next.js merchant dashboard (React, Tailwind CSS v4)
+│   ├── api/              # Express-based backend REST API (Drizzle ORM, Postgres)
+│   ├── web/              # Next.js customer-facing checkout application
+│   └── docs/             # Next.js documentation portal
+├── services/
+│   └── blockchain-watcher/ # Node.js service monitoring EVM chains for transactions
+└── packages/
+    ├── payment-core/     # Core payment logic, schema definitions, and token configurations
+    ├── wallet-core/      # Wallet connectivity logic, Wagmi config, and chain definitions
+    ├── shared/           # Monorepo-wide shared utility functions (e.g., formatting)
+    ├── ui/               # Shared component design system primitives
+    ├── eslint-config/    # Shared ESLint linting configurations
+    └── typescript-config/# Shared tsconfig.json configurations
 ```
 
-## What's inside?
+---
 
-This Turborepo includes the following packages/apps:
+## 🚀 Key Features
 
-### Apps and Packages
+### 1. Merchant Dashboard (`apps/dashboard`)
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+- **Aesthetics**: Premium cyberpunk/terminal design with customized glassmorphism (`cyber-glass`), animated statuses, and telemetry typography.
+- **Live Payments Log**: Real-time listing of transactions, amounts, networks, and statuses (`pending`, `detected`, `confirming`, `completed`, `failed`, `expired`).
+- **Payment Detail Page (`/payments/[id]`)**:
+  - **Live Confirmation Progress**: A multi-step visual pipeline (`Detected ➔ Confirming ➔ Confirmed`) with animated progress indicators and a live polling engine that updates every 5 seconds.
+  - **Auto-Termination**: Intelligent polling lifecycle that automatically terminates when the payment reaches a terminal state (`completed`, `failed`, `expired`).
+  - **Dynamic Requirements**: Automatically scales confirmation requirements based on the underlying network configurations (e.g., 3 confirmations on mainnet, 1 confirmation on localhost).
+  - **Telemetry Details**: Displays complete payment metadata including short-form transaction hashes, wallet addresses, token symbols, exchange rates, and transaction dates.
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+### 2. Core Services & Shared Packages
 
-### Utilities
+- **Blockchain Watcher**: Dedicated background watcher matching on-chain events to database records.
+- **@repo/shared**: Highly reusable formatting helpers (`shortHash`, `shortAddr`, `formatDate`) imported across all apps to prevent utility duplication.
+- **Component Architecture Standards**:
+  - `components/ui/`: Houses primitive layouts and design blocks (e.g., `MetaRow`, `SectionCard`).
+  - `components/payments/`: Contains domain-specific modules (e.g., `ConfirmationProgress`, `PaymentDetail`).
 
-This Turborepo has some additional tools already setup for you:
+---
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+## 🛠 Getting Started
 
-### Build
+### Prerequisites
 
-To build all apps and packages, run the following command:
+- Node.js (>= 18)
+- [pnpm](https://pnpm.io/) (>= 9.0.0)
+- Docker (for running database & local Node containers)
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+### Development Workflow
 
-```sh
-cd my-turborepo
-turbo build
-```
+1.  **Install Dependencies**:
 
-Without global `turbo`, use your package manager:
+    ```sh
+    pnpm install
+    ```
 
-```sh
-cd my-turborepo
-npx turbo build
-pnpm dlx turbo build
-pnpm exec turbo build
-```
+2.  **Run Dev Environment**:
+    Starts all frontend apps (Dashboard, Web, Docs) and backend APIs simultaneously:
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+    ```sh
+    pnpm dev
+    ```
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+3.  **Run Blockchain Watcher**:
+    ```sh
+    pnpm watcher
+    ```
 
-```sh
-turbo build --filter=docs
-```
+### Command Reference
 
-Without global `turbo`:
+| Command            | Description                                            |
+| :----------------- | :----------------------------------------------------- |
+| `pnpm dev`         | Run all applications and packages in development mode  |
+| `pnpm build`       | Compile and build all applications and packages        |
+| `pnpm watcher`     | Run the background blockchain watcher service          |
+| `pnpm lint`        | Lint the entire monorepo using ESLint                  |
+| `pnpm check-types` | Run TypeScript compilation check across all packages   |
+| `pnpm format`      | Run Prettier formatter to check/write style guidelines |
 
-```sh
-npx turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+---
 
-### Develop
+## ⚙️ CI/CD & Remote Caching
 
-To develop all apps and packages, run the following command:
+This monorepo supports Turborepo Remote Caching to share build caches across your team and CI/CD pipelines.
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo dev
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo dev
-pnpm exec turbo dev
-pnpm exec turbo dev
-```
-
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+To set up Remote Caching with Vercel:
 
 ```sh
-turbo dev --filter=web
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
 pnpm exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-pnpm exec turbo link
 pnpm exec turbo link
 ```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
