@@ -7,7 +7,7 @@ import {
   metaMask,
 } from "wagmi/connectors";
 
-import { mainnet, base, polygon, arbitrum, foundry } from "wagmi/chains";
+import { mainnet, sepolia, base, polygon, arbitrum, foundry } from "wagmi/chains";
 
 import { supportedChains } from "./constants/chains";
 
@@ -53,6 +53,7 @@ export function createWagmiConfig(
 
     transports: {
       [mainnet.id]: http(),
+      [sepolia.id]: http(),
       [base.id]: http(),
       [polygon.id]: http(),
       [arbitrum.id]: http(),

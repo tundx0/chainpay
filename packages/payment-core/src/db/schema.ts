@@ -12,6 +12,7 @@ export const currencyEnum = pgEnum("currency", ["USDC", "USDT", "ETH", "BTC"]);
 export const networkEnum = pgEnum("network", [
   "base",
   "ethereum",
+  "sepolia",
   "polygon",
   "arbitrum",
   "localhost",

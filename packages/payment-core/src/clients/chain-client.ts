@@ -1,9 +1,10 @@
 import { createPublicClient, http, type PublicClient } from "viem";
-import { arbitrum, base, foundry, mainnet, polygon } from "viem/chains";
+import { arbitrum, base, foundry, mainnet, polygon, sepolia } from "viem/chains";
 import type { Network } from "../types/payment";
 
 const CHAIN_BY_NETWORK = {
   ethereum: mainnet,
+  sepolia,
   base,
   polygon,
   arbitrum,
@@ -12,6 +13,7 @@ const CHAIN_BY_NETWORK = {
 
 const DEFAULT_RPC_URLS: Record<Network, string | undefined> = {
   ethereum: undefined,
+  sepolia: undefined,
   base: undefined,
   polygon: undefined,
   arbitrum: undefined,

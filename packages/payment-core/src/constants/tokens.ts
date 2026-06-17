@@ -16,6 +16,19 @@ export interface NetworkTokenConfig {
 }
 
 export const NETWORK_TOKEN_CONFIG: Record<Network, NetworkTokenConfig> = {
+  sepolia: {
+    chainId: 11_155_111,
+    requiredConfirmations: 2,
+    explorerBaseUrl: "https://sepolia.etherscan.io",
+    tokens: {
+      ETH: { type: "native", decimals: 18 },
+      USDC: {
+        type: "erc20",
+        decimals: 6,
+        contractAddress: "0x1c7D4B196Cb0C7B7dae389ea4e0c0DdB6C0a4c4",
+      },
+    },
+  },
   ethereum: {
     chainId: 1,
     requiredConfirmations: 3,

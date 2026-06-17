@@ -80,7 +80,12 @@ services:
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgres://chainpay:${DB_PASSWORD}@postgres:5432/chainpay
+      - RPC_SEPOLIA=${RPC_SEPOLIA_URL}
+      - RPC_ETHEREUM=${RPC_ETHEREUM_URL}
       - RPC_BASE=${RPC_BASE_URL}
+      - RPC_POLYGON=${RPC_POLYGON_URL}
+      - RPC_ARBITRUM=${RPC_ARBITRUM_URL}
+      - WATCHER_POLL_INTERVAL_MS=${WATCHER_POLL_INTERVAL_MS:-30000}
       - INNGEST_BASE_URL=http://inngest:8288
       - INNGEST_EVENT_KEY=${INNGEST_EVENT_KEY}
       - INNGEST_SIGNING_KEY=${INNGEST_SIGNING_KEY}

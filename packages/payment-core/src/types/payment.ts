@@ -6,6 +6,7 @@ export const CURRENCIES = ["USDC", "USDT", "ETH", "BTC"] as const;
 export const NETWORKS = [
   "base",
   "ethereum",
+  "sepolia",
   "polygon",
   "arbitrum",
   "localhost",
