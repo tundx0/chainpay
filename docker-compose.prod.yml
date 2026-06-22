@@ -1,5 +1,9 @@
 version: '3.8'
 
+# Requires env vars from .env.production — always run via:
+#   docker compose --env-file .env.production -f docker-compose.prod.yml up -d
+# or: ./scripts/deploy-prod.sh up -d
+
 services:
   # 1. Database
   postgres:
@@ -12,10 +16,11 @@ services:
     volumes:
       - postgres_prod_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U chainpay"]
+      test: ["CMD-SHELL", "pg_isready -U chainpay -d chainpay"]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 30s
     restart: always
 
   # 2. Redis Queue Cache for Inngest
@@ -100,6 +105,10 @@ services:
   caddy:
     image: caddy:2-alpine
     container_name: chainpay-proxy-prod
+    environment:
+      - API_DOMAIN=${API_DOMAIN}
+      - INNGEST_DOMAIN=${INNGEST_DOMAIN}
+      - INNGUEST_DASHBOARD_PASSWORD_HASH=${INNGUEST_DASHBOARD_PASSWORD_HASH}
     ports:
       - "80:80"
       - "443:443"

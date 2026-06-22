@@ -84,5 +84,5 @@ jobs:
             echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             export API_IMAGE=ghcr.io/${{ github.repository }}/api:latest
             export WATCHER_IMAGE=ghcr.io/${{ github.repository }}/watcher:latest
-            docker compose -f docker-compose.prod.yml pull api watcher
-            docker compose -f docker-compose.prod.yml up -d --no-deps api watcher
+            docker compose --env-file .env.production -f docker-compose.prod.yml pull api watcher
+            docker compose --env-file .env.production -f docker-compose.prod.yml up -d --no-deps api watcher

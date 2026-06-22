@@ -61,8 +61,8 @@ API_DOMAIN=api.nodecheckout.com
 INNGEST_DOMAIN=inngest.nodecheckout.com
 
 # Alchemy / EVM RPC URLs (set the networks you use; leave unused ones empty)
-RPC_SEPOLIA_URL=https://eth-sepolia.g.alchemy.com/v2/QJ_sXO7okAk90h1j4U-b-
-RPC_BASE_URL=https://base-sepolia.g.alchemy.com/v2/QJ_sXO7okAk90h1j4U-b-
+RPC_SEPOLIA_URL=https://eth-sepolia.g.alchemy.com/v2/YOUR_ALCHEMY_KEY
+RPC_BASE_URL=https://base-sepolia.g.alchemy.com/v2/YOUR_ALCHEMY_KEY
 RPC_ETHEREUM_URL=
 RPC_POLYGON_URL=
 RPC_ARBITRUM_URL=
