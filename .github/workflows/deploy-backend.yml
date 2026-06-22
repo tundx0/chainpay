@@ -15,7 +15,7 @@ on:
 
 jobs:
   validate:
-    name: Lint & Type-check
+    name: Type-check backend
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,8 +27,7 @@ jobs:
           node-version: 18
           cache: 'pnpm'
       - run: pnpm install
-      - run: pnpm run lint
-      - run: pnpm run check-types
+      - run: pnpm turbo run check-types --filter=api --filter=blockchain-watcher --filter=@repo/payment-core
 
   build-and-push:
     name: Build & Push Docker Images

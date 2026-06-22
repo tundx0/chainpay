@@ -34,7 +34,7 @@ export default function IntroductionPage() {
 
       <div className="doc-alert">
         <span className="doc-alert-title">💡 Developer-First Philosophy</span>
-        <p>ChainPay operates entirely non-custodially. Funds transfer directly from the customer's wallet to the merchant's wallet on-chain. ChainPay never holds, manages, or intercepts your assets.</p>
+        <p>ChainPay operates entirely non-custodially. Funds transfer directly from the customer&apos;s wallet to the merchant&apos;s wallet on-chain. ChainPay never holds, manages, or intercepts your assets.</p>
       </div>
     </div>
   );

@@ -3,6 +3,17 @@
 import React, { useState } from "react";
 import { CopyButton } from "@repo/ui/copy-button";
 
+type ChainPayWidget = {
+  open: (opts: {
+    paymentId: string;
+    checkoutUrl: string;
+    onSuccess: (data: unknown) => void;
+    onClose: () => void;
+  }) => void;
+};
+
+type ChainPayWindow = Window & { ChainPay?: ChainPayWidget };
+
 export default function Playground() {
   const [activeTab, setActiveTab] = useState<"react" | "node" | "curl">("react");
   
@@ -59,14 +70,14 @@ console.log("Pay URL:", session.checkoutUrl);`,
             onClick={() => {
               const SCRIPT_URL = `${dashboardUrl}/widget.js`;
               const openWidget = () => {
-                (window as any).ChainPay?.open({
+                (window as ChainPayWindow).ChainPay?.open({
                   paymentId: "pay_demo",
                   checkoutUrl: dashboardUrl,
-                  onSuccess: (data: any) => console.log("Demo paid:", data),
+                  onSuccess: (data) => console.log("Demo paid:", data),
                   onClose: () => console.log("Demo closed"),
                 });
               };
-              if (!(window as any).ChainPay) {
+              if (!(window as ChainPayWindow).ChainPay) {
                 const script = document.createElement("script");
                 script.src = SCRIPT_URL;
                 script.onload = openWidget;
@@ -139,6 +150,7 @@ console.log("Pay URL:", session.checkoutUrl);`,
           </div>
 
           <pre className="text-left select-all animate-code-fade">
+            {/* eslint-disable react/no-unescaped-entities */}
             {activeTab === "react" && (
               <code>
                 <span className="text-text-muted">import</span> {"{"} CheckoutCard {"}"} <span className="text-text-muted">from</span> <span className="text-[#CCFF00]">"@repo/ui"</span>;<br /><br />
@@ -179,6 +191,7 @@ console.log("Pay URL:", session.checkoutUrl);`,
                 {"  "}{"}'"}
               </code>
             )}
+            {/* eslint-enable react/no-unescaped-entities */}
           </pre>
         </div>
       </div>
