@@ -25,7 +25,7 @@ app.use("/api/inngest", serve({ client: inngest, functions: [paymentWorkflow] })
 
 // ─── Health ───────────────────────────────────────────────────────────────────
 app.get("/health", (_, res) => {
-  res.json({ status: "ok" });
+  res.json({ status: "ok", service: "chainpay-api" });
 });
 
 // ─── Payment Routes ───────────────────────────────────────────────────────────
