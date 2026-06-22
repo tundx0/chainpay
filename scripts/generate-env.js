@@ -7,6 +7,11 @@ function generateSecureString(length = 32) {
   return crypto.randomBytes(length).toString("hex");
 }
 
+/** Docker Compose treats `$VAR` in .env values as interpolation — escape bcrypt `$` as `$$`. */
+function escapeForDockerComposeEnv(value) {
+  return value.replace(/\$/g, "$$$$");
+}
+
 function main() {
   const envPath = path.join(__dirname, "../.env.production");
 
@@ -69,7 +74,7 @@ RPC_ARBITRUM_URL=
 
 # Inngest Dashboard Credentials
 INNGUEST_DASHBOARD_PASSWORD_CLEARTEXT=${dashboardPassword}
-INNGUEST_DASHBOARD_PASSWORD_HASH=${dashboardPasswordHash}
+INNGUEST_DASHBOARD_PASSWORD_HASH=${escapeForDockerComposeEnv(dashboardPasswordHash)}
 `;
 
   fs.writeFileSync(envPath, envContent, "utf-8");

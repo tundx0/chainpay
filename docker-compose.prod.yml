@@ -34,7 +34,22 @@ services:
       retries: 5
     restart: always
 
-  # 3. Self-Hosted Inngest Server
+  # 3. Database schema (runs once before api/watcher)
+  migrate:
+    image: ${API_IMAGE:-chainpay-api-prod}
+    build:
+      context: .
+      dockerfile: ./apps/api/Dockerfile
+    container_name: chainpay-migrate-prod
+    environment:
+      - DATABASE_URL=postgres://chainpay:${DB_PASSWORD}@postgres:5432/chainpay
+    command: pnpm --filter api db:push
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  # 4. Self-Hosted Inngest Server
   inngest:
     image: inngest/inngest:latest
     container_name: chainpay-inngest-prod
@@ -52,13 +67,15 @@ services:
         condition: service_healthy
     restart: always
 
-  # 4. Express API
+  # 5. Express API
   api:
     image: ${API_IMAGE:-chainpay-api-prod}
     build:
       context: .
       dockerfile: ./apps/api/Dockerfile
     container_name: chainpay-api-prod
+    ports:
+      - "127.0.0.1:4000:4000" # localhost only — public access is via Caddy on 443
     environment:
       - NODE_ENV=production
       - PORT=4000
@@ -66,16 +83,18 @@ services:
       - INNGEST_BASE_URL=http://inngest:8288
       - INNGEST_EVENT_KEY=${INNGEST_EVENT_KEY}
       - INNGEST_SIGNING_KEY=${INNGEST_SIGNING_KEY}
-    # Auto-run drizzle migrations on container boot
-    command: sh -c "pnpm --filter api db:push && pnpm --filter api run start"
+    # Schema is applied by the migrate service
+    command: pnpm --filter api run start
     depends_on:
       postgres:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
       inngest:
         condition: service_started
     restart: always
 
-  # 5. Blockchain Watcher
+  # 6. Blockchain Watcher
   watcher:
     image: ${WATCHER_IMAGE:-chainpay-watcher-prod}
     build:
@@ -97,11 +116,13 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
       inngest:
         condition: service_started
     restart: always
 
-  # 6. Caddy Reverse Proxy
+  # 7. Caddy Reverse Proxy
   caddy:
     image: caddy:2-alpine
     container_name: chainpay-proxy-prod
