@@ -1,6 +1,26 @@
-# ChainPay
+<p align="center">
+  <img src=".github/assets/chainpay-hero.png" alt="ChainPay landing page — developer-first Web3 payment gateway with live on-chain telemetry" width="900" />
+</p>
 
-ChainPay is an advanced, developer-first cryptocurrency payment gateway and processing platform. Built as a high-performance monorepo using **pnpm workspaces** and **Turborepo**, it features a cyberpunk/terminal-inspired merchant dashboard, automated blockchain monitoring, and an API/SDK service layer.
+<h1 align="center">ChainPay</h1>
+
+<p align="center">
+  <strong>The developer-first, non-custodial Web3 payment gateway.</strong><br />
+  Accept crypto directly to your wallet — with live on-chain telemetry, durable workflows, and embeddable checkout.
+</p>
+
+<p align="center">
+  <a href="#-key-features">Features</a> ·
+  <a href="#-getting-started">Getting Started</a> ·
+  <a href="#-production-vps-deployment">Self-Host</a> ·
+  <a href="https://chainpay-docs.vercel.app">Docs</a>
+</p>
+
+---
+
+**ChainPay** is an open-source cryptocurrency payment platform built for developers. Merchants create invoices, customers pay from their wallet, and funds settle on-chain — ChainPay never holds your assets.
+
+Built as a **pnpm + Turborepo** monorepo with a cyberpunk merchant dashboard, customer checkout, REST API, **EVM blockchain watcher**, **Inngest** durable workflows, signed webhooks, and an embeddable widget SDK. Deploy the backend on your own VPS (Docker Compose + Caddy) and frontends on Vercel.
 
 ---
 
@@ -112,18 +132,24 @@ pnpm exec turbo link
 ChainPay supports a fully containerized deployment model for VPS hosting (e.g. DigitalOcean, Hetzner, AWS EC2) using **Docker Compose** and **Caddy** with a self-hosted instance of **Inngest**. The landing page, merchant dashboard, and documentation portals are hosted on **Vercel**, while backend API and watchers run on the VPS.
 
 ### 1. Generating Credentials
+
 We provide a utility script to generate all required passwords, secrets, event keys, and Caddy password hashes. To generate or rotate your production environment file, run:
+
 ```sh
 node scripts/generate-env.js
 ```
+
 This generates a secure `.env.production` file at the root. You can force regeneration using the `--force` flag.
 
 ### 2. DNS Config
+
 Point two DNS `A` records to your VPS IP:
+
 - `api.nodecheckout.com` (maps to the Express API)
 - `inngest.nodecheckout.com` (maps to the Inngest Dev Server dashboard)
 
 ### 3. Deploying
+
 1. Copy the codebase onto your VPS.
 2. Edit `.env.production` on the server to configure your EVM node `RPC_BASE_URL` (it defaults to `nodecheckout.com` domains automatically).
 3. Launch all services using Docker Compose:
@@ -131,4 +157,3 @@ Point two DNS `A` records to your VPS IP:
    docker compose -f docker-compose.prod.yml up -d --build
    ```
 4. Access `https://inngest.nodecheckout.com`, log in with `admin` and your generated dashboard password, and sync your application handler by registering the endpoint `http://api:4000/api/inngest` (or `https://api.nodecheckout.com/api/inngest`).
-
