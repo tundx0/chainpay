@@ -3,9 +3,18 @@
 }
 
 {$INNGEST_DOMAIN} {
-    # Secures the Inngest dashboard with Basic Authentication
-    basic_auth {
-        admin {$INNGUEST_DASHBOARD_PASSWORD_HASH}
+    # Inngest API + realtime (runs, GraphQL, WebSockets) — no basic auth.
+    # SDK traffic is secured by INNGEST_EVENT_KEY / INNGEST_SIGNING_KEY.
+    @inngest_api path /e/* /fn/* /invoke/* /health /metrics /dev /dev/* /v0/* /v1/* /api/*
+    handle @inngest_api {
+        reverse_proxy inngest:8288
     }
-    reverse_proxy inngest:8288
+
+    # Dashboard UI only
+    handle {
+        basic_auth {
+            admin {$INNGUEST_DASHBOARD_PASSWORD_HASH}
+        }
+        reverse_proxy inngest:8288
+    }
 }
