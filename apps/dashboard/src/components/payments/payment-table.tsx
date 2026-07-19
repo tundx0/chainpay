@@ -1,6 +1,8 @@
 "use client";
 
 import type { PaymentRequest } from "@repo/payment-core";
+import { buildCheckoutUrl } from "@repo/payment-core";
+import { CopyButton } from "@repo/ui/copy-button";
 
 const STATUS_STYLES: Record<string, string> = {
   pending: "bg-amber-500/15 text-amber-400 border border-amber-500/30",
@@ -37,6 +39,7 @@ export function PaymentTable({ payments }: PaymentTableProps) {
               "Network",
               "Status",
               "Created At",
+              "",
             ].map((col) => (
               <th
                 key={col}
@@ -69,6 +72,13 @@ export function PaymentTable({ payments }: PaymentTableProps) {
               </td>
               <td className="px-4 py-3.5 text-zinc-500">
                 {new Date(p.createdAt).toLocaleString()}
+              </td>
+              <td className="px-4 py-3.5 text-right">
+                <CopyButton
+                  value={buildCheckoutUrl(p.id)}
+                  className="p-1.5 h-auto text-zinc-500 hover:text-white rounded border border-zinc-700 bg-zinc-800/50 cursor-pointer inline-flex transition-colors"
+                  title="Copy Checkout Link"
+                />
               </td>
             </tr>
           ))}
