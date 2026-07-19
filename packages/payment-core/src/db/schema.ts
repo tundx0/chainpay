@@ -24,6 +24,7 @@ export const statusEnum = pgEnum("status", [
   "completed",
   "failed",
   "expired",
+  "refunded",
 ]);
 
 export const paymentRequests = pgTable("payment_requests", {

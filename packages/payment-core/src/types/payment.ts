@@ -18,6 +18,7 @@ export const PAYMENT_STATUSES = [
   "completed",
   "failed",
   "expired",
+  "refunded",
 ] as const;
 
 export type Currency = (typeof CURRENCIES)[number];

@@ -82,4 +82,14 @@ export const paymentClient = {
   getRates(): Promise<Record<string, number>> {
     return request("/rates");
   },
+
+  refundPayment(
+    id: string,
+    merchantAddress: string,
+  ): Promise<GetPaymentResponse> {
+    return request(`/payments/${id}/refund`, {
+      method: "POST",
+      merchantAddress,
+    });
+  },
 };
