@@ -8,6 +8,7 @@ import { listPayments } from "./routes/payment/list-payments";
 import { getPayment } from "./routes/payment/get-payment";
 import { updateStatus } from "./routes/payment/update-status";
 import { submitPayment } from "./routes/payment/submit-payment";
+import { refundPayment } from "./routes/payment/refund-payment";
 import { getRates } from "./routes/rates";
 
 const app = express();
@@ -34,6 +35,7 @@ app.get("/payments", listPayments);
 app.get("/payments/:id", getPayment);
 app.post("/payments/:id/submit", submitPayment);
 app.patch("/payments/:id/status", updateStatus);
+app.post("/payments/:id/refund", refundPayment);
 app.get("/rates", getRates);
 
 // ─── Start ────────────────────────────────────────────────────────────────────
