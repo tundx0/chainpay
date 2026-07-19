@@ -6,9 +6,10 @@ import { Button } from "./button";
 interface CopyButtonProps {
   value: string;
   className?: string;
+  title?: string;
 }
 
-export function CopyButton({ value, className = "" }: CopyButtonProps) {
+export function CopyButton({ value, className = "", title }: CopyButtonProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -23,6 +24,7 @@ export function CopyButton({ value, className = "" }: CopyButtonProps) {
       variant="ghost"
       onClick={handleCopy}
       className={className}
+      title={title}
     >
       {copied ? (
         <svg
