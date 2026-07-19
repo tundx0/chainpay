@@ -7,3 +7,5 @@ export * from "./providers/query-provider";
 export * from "./constants/chains";
 export * from "./types/wallet";
 export * from "./types/payment-send";
+
+export { parseUnits } from "viem";

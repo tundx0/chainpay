@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useSendTransaction, useWriteContract } from "wagmi";
-import { parseUnits, erc20Abi } from "viem";
 import { Button } from "@repo/ui/button";
-import { useWallet } from "@repo/wallet-core";
-import { paymentClient, getTokenConfig } from "@repo/payment-core";
+import {
+  useWallet,
+  useSendPayment,
+  parseUnits,
+} from "@repo/wallet-core";
+import { paymentClient, getTokenConfig, getChainId } from "@repo/payment-core";
 import type { PaymentRequest, Currency, Network } from "@repo/payment-core";
 
 interface RefundButtonProps {
@@ -18,35 +20,31 @@ export function RefundButton({ payment, onRefunded }: RefundButtonProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { sendTransactionAsync } = useSendTransaction();
-  const { writeContractAsync } = useWriteContract();
+  const { sendPayment } = useSendPayment();
 
   const handleRefund = async () => {
     if (!address || !payment.payerAddress) {
       setError("Wallet not connected or payer address missing");
       return;
     }
-    
+
     setLoading(true);
     setError(null);
     try {
-      const config = getTokenConfig(payment.network as Network, payment.currency as Currency);
+      const config = getTokenConfig(
+        payment.network as Network,
+        payment.currency as Currency,
+      );
       const amountAtomic = parseUnits(payment.amount, config.decimals);
-      
-      if (config.type === "native") {
-        await sendTransactionAsync({
-          to: payment.payerAddress as `0x${string}`,
-          value: amountAtomic,
-        });
-      } else {
-        if (!config.contractAddress) throw new Error("Missing contract address");
-        await writeContractAsync({
-          address: config.contractAddress,
-          abi: erc20Abi,
-          functionName: "transfer",
-          args: [payment.payerAddress as `0x${string}`, amountAtomic],
-        });
-      }
+      const chainId = getChainId(payment.network as Network);
+
+      await sendPayment({
+        merchantAddress: payment.payerAddress as `0x${string}`,
+        amountAtomic,
+        chainId,
+        tokenType: config.type,
+        tokenAddress: config.contractAddress,
+      });
 
       await paymentClient.refundPayment(payment.id, address);
       onRefunded();
@@ -69,7 +67,11 @@ export function RefundButton({ payment, onRefunded }: RefundButtonProps) {
       >
         {loading ? "PROCESSING_REFUND..." : "ISSUE_REFUND"}
       </Button>
-      {error && <span className="text-red-400 text-xs font-mono break-all">{error}</span>}
+      {error && (
+        <span className="text-red-400 text-xs font-mono break-all">
+          {error}
+        </span>
+      )}
     </div>
   );
 }
