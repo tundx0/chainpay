@@ -12,6 +12,8 @@ import { shortHash, shortAddr, formatDate } from "@repo/shared";
 import { MetaRow } from "../ui/meta-row";
 import { SectionCard } from "../ui/section-card";
 import { ConfirmationProgress } from "./confirmation-progress";
+import { RefundButton } from "./refund-button";
+import { buildCheckoutUrl } from "@repo/payment-core";
 
 interface PaymentDetailProps {
   payment: PaymentRequest;
@@ -76,6 +78,16 @@ export function PaymentDetail({
             />
           </MetaRow>
         )}
+        <MetaRow label="Checkout URL">
+          <span className="font-mono text-xs text-text-secondary truncate max-w-[200px]">
+            {buildCheckoutUrl(payment.id)}
+          </span>
+          <CopyButton
+            value={buildCheckoutUrl(payment.id)}
+            className="p-1 h-auto text-muted hover:text-text-primary rounded border border-border bg-surface-raised cursor-pointer"
+          />
+        </MetaRow>
+        <RefundButton payment={payment} onRefunded={() => window.location.reload()} />
       </SectionCard>
 
       <SectionCard title="Transaction">
